@@ -17,6 +17,16 @@ const getRepoRoot = async () => {
   }
 }
 
+const getRemote = async () => {
+  try {
+    const stdout = await run('git remote get-url origin')
+    return stdout.trim()
+  } catch (err) {
+    throw new Error(`error getting remote: ${err}`)
+  }
+}
+
 module.exports = {
   getRepoRoot,
+  getRemote,
 }
