@@ -1,8 +1,10 @@
-const { program } = require('commander');
+const { program } = require('commander')
+const { getRepoRoot } = require('./git')
 
 program.command('new')
   .argument('<pr_number>', 'number/id of the pull request for which to start a review')
-  .action((id, options) => {
+  .action(async (id, options) => {
+    console.log(await getRepoRoot())
     console.log('id of the pr: ', id)
   })
 
