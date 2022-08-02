@@ -1,3 +1,9 @@
 const program = require('./cli')
+const { init } = require('./files')
 
-program.parse()
+const run = async () => {
+  await init()
+  program.parse()
+}
+
+run()
