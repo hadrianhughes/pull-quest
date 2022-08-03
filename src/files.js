@@ -4,15 +4,30 @@ const { getRepoRoot } = require('./git')
 
 const DIR_NAME = '.pull-quest'
 
-const init = async () => {
+const touchDir = async dirPath => {
   const repoRoot = await getRepoRoot()
-  const dirPath = path.join(repoRoot, DIR_NAME)
+  const fullPath = path.join(repoRoot, DIR_NAME, dirPath)
 
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath)
+  if (!fs.existsSync(fullPath)) {
+    fs.mkdirSync(fullPath)
   }
+
+  return fullPath
+}
+
+const writeFile = async (name, data) => {
+  const dir = await touchDir('')
+  const fullPath = path.join(dir, name)
+  return fs.writeFileSync(fullPath, data)
+}
+
+const initRootDir = () => touchDir('')
+
+const startReview = async pr_number => {
+  await initRootDir()
+  writeFile('current_pr', String(pr_number))
 }
 
 module.exports = {
-  init,
+  startReview,
 }

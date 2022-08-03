@@ -11,6 +11,14 @@
     "sourceType": "module"
   },
   "rules": {
-    "semi": ["error", "never"]
+    "semi": ["error", "never"],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
   }
 }
