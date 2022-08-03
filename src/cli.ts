@@ -46,3 +46,15 @@ program.command('abort')
   })
 
 export default program
+
+program.command('status')
+  .action(async () => {
+    const prNumber = await getPR()
+    if (!prNumber) {
+      console.info('NO REVIEW IN PROGRESS')
+      return
+    }
+
+    const status = await getStatus()
+    console.info(`Review status: ${status}`)
+  })
