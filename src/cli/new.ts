@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { getPR, startReview } from '../files'
+import { getPR, getStatus, startReview } from '../files'
 import { getPullRequest } from '../github'
 
 export const makeNewCommand = () => {
@@ -16,7 +16,10 @@ export const makeNewCommand = () => {
 
       const pr = await getPullRequest(id)
       startReview(id)
-      console.info(`STARTED A REVIEW\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${id}`)
+
+      const status = await getStatus()
+
+      console.info(`STARTED A REVIEW\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${id}\nStatus:\t\t${status}`)
     })
 
   return newCommand

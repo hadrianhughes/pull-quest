@@ -16,7 +16,7 @@ export const makeSummaryCommand = () => {
       const status = await getStatus()
 
       const pr = await getPullRequest(prNumber)
-      console.info(`REVIEW IN PROGRESS\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${prNumber}\nStatus:\t${status}`)
+      console.info(`REVIEW IN PROGRESS\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${prNumber}\nStatus:\t\t${status}`)
     })
 
   return summary
