@@ -70,3 +70,7 @@ export const getStatus = async (): Promise<ReviewStatus> => {
 export const abortPR = () => {
   Object.keys(PQ_STRUCTURE).map(k => deleteFile(PQ_STRUCTURE[k]))
 }
+
+export const setStatus = (s: ReviewStatus) => {
+  writeFile(PQ_STRUCTURE.status, s)
+}
