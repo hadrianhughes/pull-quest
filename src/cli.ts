@@ -5,6 +5,12 @@ import { getPullRequest } from './github'
 program.command('new')
   .argument('<pr_number>', 'number/id of the pull request for which to start a review')
   .action(async (id: number) => {
+    const current = await getCurrentPR()
+    if (current) {
+      console.info('REVIEW ALREADY IN PROGRESS\nFinish the current review or use `pq abort`')
+      return
+    }
+
     const pr = await getPullRequest(id)
     startReview(id)
     console.info(`STARTED A REVIEW\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${id}`)
