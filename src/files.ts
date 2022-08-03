@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { getRepoRoot } from './git'
+import { Maybe } from './types'
 
 const DIR_NAME = '.pull-quest'
 
@@ -19,15 +20,35 @@ const touchDir = async (dirPath: string) => {
   return fullPath
 }
 
-const writeFile = async (name: string, data: string) => {
-  const dir = await touchDir('')
-  const fullPath = path.join(dir, name)
+const touchRoot = () => touchDir(DIR_NAME)
+
+const openFile = async (filePath: string): Promise<Maybe<string>> => {
+  const root = await touchRoot()
+  const fullPath = path.join(root, filePath)
+
+  if (!fs.existsSync(fullPath)) {
+    return null
+  }
+
+  return fs.readFileSync(fullPath, { encoding: 'utf8' })
+}
+
+const writeFile = async (filePath: string, data: string) => {
+  const root = await touchRoot()
+  const fullPath = path.join(root, filePath)
   return fs.writeFileSync(fullPath, data)
 }
 
-const initRootDir = () => touchDir('')
-
 export const startReview = async (pr_number: number) => {
-  await initRootDir()
+  await touchRoot()
   writeFile(PQ_STRUCTURE.currentPr, String(pr_number))
+}
+
+export const getCurrentPR = async (): Promise<Maybe<number>> => {
+  const file = await openFile(PQ_STRUCTURE.currentPr)
+  if (!file) {
+    return null
+  }
+
+  return parseInt(file)
 }
