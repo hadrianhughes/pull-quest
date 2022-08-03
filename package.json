@@ -4,8 +4,10 @@
   "description": "A command-line tool for crafting useful Github PR reviews.",
   "main": "src/index.ts",
   "dependencies": {
+    "@types/promptly": "^3.0.2",
     "commander": "^9.4.0",
-    "octokit": "^2.0.4"
+    "octokit": "^2.0.4",
+    "promptly": "^3.2.0"
   },
   "scripts": {
     "build": "webpack && chmod +x ./dist/pq",

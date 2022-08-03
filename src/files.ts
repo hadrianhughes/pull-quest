@@ -39,6 +39,12 @@ const writeFile = async (filePath: string, data: string) => {
   return fs.writeFileSync(fullPath, data)
 }
 
+const deleteFile = async (filePath: string) => {
+  const root = await touchRoot()
+  const fullPath = path.join(root, filePath)
+  return fs.unlinkSync(fullPath)
+}
+
 export const startReview = async (pr_number: number) => {
   await touchRoot()
   writeFile(PQ_STRUCTURE.currentPr, String(pr_number))
@@ -51,4 +57,8 @@ export const getCurrentPR = async (): Promise<Maybe<number>> => {
   }
 
   return parseInt(file)
+}
+
+export const abortPR = () => {
+  deleteFile(PQ_STRUCTURE.currentPr)
 }

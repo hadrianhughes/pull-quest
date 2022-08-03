@@ -1,5 +1,6 @@
 import { program } from 'commander'
-import { getCurrentPR, startReview } from './files'
+import * as promptly from 'promptly'
+import { abortPR, getCurrentPR, startReview } from './files'
 import { getPullRequest } from './github'
 
 program.command('new')
@@ -26,6 +27,20 @@ program.command('status')
 
     const pr = await getPullRequest(prNumber)
     console.info(`REVIEW IN PROGRESS\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${prNumber}`)
+  })
+
+program.command('abort')
+  .action(async () => {
+    const prNumber = await getCurrentPR()
+    if (!prNumber) {
+      console.info('NO REVIEW IN PROGRESS')
+      return
+    }
+
+    const c = await promptly.prompt('Confirm ABORT current review (y/N): ')
+    if (c.toLowerCase() === 'y') {
+      abortPR()
+    }
   })
 
 export default program
