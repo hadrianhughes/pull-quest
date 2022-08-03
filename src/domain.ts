@@ -1,4 +1,4 @@
-import { Dict } from './types'
+import { Dict } from './utils'
 
 export const PQ_STRUCTURE: Dict<string> = {
   pr: 'pr',

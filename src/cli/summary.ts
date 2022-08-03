@@ -1,6 +1,7 @@
 import { Command } from 'commander'
 import { getPR, getStatus } from '../files'
 import { getPullRequest } from '../github'
+import { printInfo } from '../utils'
 
 export const makeSummaryCommand = () => {
   const summary = new Command('summary')
@@ -16,7 +17,11 @@ export const makeSummaryCommand = () => {
       const status = await getStatus()
 
       const pr = await getPullRequest(prNumber)
-      console.info(`REVIEW IN PROGRESS\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${prNumber}\nStatus:\t\t${status}`)
+      printInfo({
+        repository: pr.head.repo.full_name,
+        pullRequest: String(prNumber),
+        status,
+      }, 'REVIEW IN PROGRESS')
     })
 
   return summary

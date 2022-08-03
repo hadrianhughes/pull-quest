@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { getRepoRoot } from './git'
-import { Maybe } from './types'
+import { Maybe } from './utils'
 import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
 const DIR_NAME = '.pull-quest'

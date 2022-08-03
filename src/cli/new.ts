@@ -1,6 +1,7 @@
 import { Command } from 'commander'
 import { getPR, getStatus, startReview } from '../files'
 import { getPullRequest } from '../github'
+import { printInfo } from '../utils'
 
 export const makeNewCommand = () => {
   const newCommand = new Command('new')
@@ -19,7 +20,11 @@ export const makeNewCommand = () => {
 
       const status = await getStatus()
 
-      console.info(`STARTED A REVIEW\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${id}\nStatus:\t\t${status}`)
+      printInfo({
+        repository: pr.head.repo.full_name,
+        pullRequest: String(id),
+        status,
+      }, 'STARTED A REVIEW')
     })
 
   return newCommand
