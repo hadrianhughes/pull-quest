@@ -2,12 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { getRepoRoot } from './git'
 import { Maybe } from './types'
+import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
 const DIR_NAME = '.pull-quest'
-
-const PQ_STRUCTURE = {
-  currentPr: 'current_pr',
-}
 
 const touchDir = async (dirPath: string) => {
   const repoRoot = await getRepoRoot()
@@ -47,11 +44,12 @@ const deleteFile = async (filePath: string) => {
 
 export const startReview = async (pr_number: number) => {
   await touchRoot()
-  writeFile(PQ_STRUCTURE.currentPr, String(pr_number))
+  writeFile(PQ_STRUCTURE.pr, String(pr_number))
+  writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
 }
 
-export const getCurrentPR = async (): Promise<Maybe<number>> => {
-  const file = await openFile(PQ_STRUCTURE.currentPr)
+export const getPR = async (): Promise<Maybe<number>> => {
+  const file = await openFile(PQ_STRUCTURE.pr)
   if (!file) {
     return null
   }
@@ -59,6 +57,16 @@ export const getCurrentPR = async (): Promise<Maybe<number>> => {
   return parseInt(file)
 }
 
+export const getStatus = async (): Promise<ReviewStatus> => {
+  const file = await openFile(PQ_STRUCTURE.status)
+  if (!file) {
+    writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
+    return ReviewStatus.Comment
+  }
+
+  return statusFromString(file)
+}
+
 export const abortPR = () => {
-  deleteFile(PQ_STRUCTURE.currentPr)
+  Object.keys(PQ_STRUCTURE).map(k => deleteFile(PQ_STRUCTURE[k]))
 }
