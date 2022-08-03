@@ -17,7 +17,7 @@ program.command('new')
     console.info(`STARTED A REVIEW\nRepository:\t${pr.head.repo.full_name}\nPull Request:\t${id}`)
   })
 
-program.command('status')
+program.command('summary')
   .action(async () => {
     const prNumber = await getCurrentPR()
     if (!prNumber) {
