@@ -1,4 +1,4 @@
-const program = require('./cli')
+import program from './cli'
 
 const run = async () => {
   if (!process.env.PQ_GITHUB_ACCESS_TOKEN) {

@@ -1,10 +1,14 @@
-const fs = require('fs')
-const path = require('path')
-const { getRepoRoot } = require('./git')
+import * as fs from 'fs'
+import * as path from 'path'
+import { getRepoRoot } from './git'
 
 const DIR_NAME = '.pull-quest'
 
-const touchDir = async dirPath => {
+const PQ_STRUCTURE = {
+  currentPr: 'current_pr',
+}
+
+const touchDir = async (dirPath: string) => {
   const repoRoot = await getRepoRoot()
   const fullPath = path.join(repoRoot, DIR_NAME, dirPath)
 
@@ -15,7 +19,7 @@ const touchDir = async dirPath => {
   return fullPath
 }
 
-const writeFile = async (name, data) => {
+const writeFile = async (name: string, data: string) => {
   const dir = await touchDir('')
   const fullPath = path.join(dir, name)
   return fs.writeFileSync(fullPath, data)
@@ -23,11 +27,7 @@ const writeFile = async (name, data) => {
 
 const initRootDir = () => touchDir('')
 
-const startReview = async pr_number => {
+export const startReview = async (pr_number: number) => {
   await initRootDir()
-  writeFile('current_pr', String(pr_number))
-}
-
-module.exports = {
-  startReview,
+  writeFile(PQ_STRUCTURE.currentPr, String(pr_number))
 }

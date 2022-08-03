@@ -1,9 +1,9 @@
-const { Octokit } = require('octokit')
-const { getRemote } = require('./git')
+import { Octokit } from 'octokit'
+import { getRemote } from './git'
 
 const ok = new Octokit({ auth: process.env.PQ_GITHUB_ACCESS_TOKEN })
 
-const detailsFromRemote = remote => {
+const detailsFromRemote = (remote: string) => {
   const match = remote.match(/^.+(?::|\/)(.+)\/(.+)\.git$/)
   if (match.length < 3) {
     throw new Error(`error parsing remote: ${remote}`)
@@ -15,7 +15,7 @@ const detailsFromRemote = remote => {
   }
 }
 
-const getPullRequest = async pull_number => {
+export const getPullRequest = async (pull_number: number) => {
   const remote = await getRemote()
   const { owner, repo } = detailsFromRemote(remote)
 
@@ -29,8 +29,4 @@ const getPullRequest = async pull_number => {
 
     throw err
   }
-}
-
-module.exports = {
-  getPullRequest,
 }
