@@ -6,10 +6,16 @@ export const makeAbortCommand = () => {
   const abort = new Command('abort')
 
   abort
-    .action(async () => {
+    .option('-y, --yes', 'bypass prompt to confirm abort')
+    .action(async (options) => {
       const prNumber = await openPR()
       if (!prNumber) {
         console.info('NO REVIEW IN PROGRESS')
+        return
+      }
+
+      if (options.yes) {
+        abortPR()
         return
       }
 
