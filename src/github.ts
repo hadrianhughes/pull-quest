@@ -1,3 +1,4 @@
+import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types'
 import { Octokit } from 'octokit'
 import { getRemote } from './git'
 
@@ -15,7 +16,7 @@ const detailsFromRemote = (remote: string) => {
   }
 }
 
-export const getPullRequest = async (pullNumber: number) => {
+export const getPullRequest = async (pullNumber: number): Promise<GetResponseDataTypeFromEndpointMethod<typeof ok.rest.pulls.get>> => {
   const remote = await getRemote()
   const { owner, repo } = detailsFromRemote(remote)
 
@@ -36,7 +37,7 @@ export const getPullRequest = async (pullNumber: number) => {
   }
 }
 
-export const getPRCommits = async (pullNumber: number) => {
+export const getPRCommits = async (pullNumber: number): Promise<string[]> => {
   const remote = await getRemote()
   const { owner, repo } = detailsFromRemote(remote)
 

@@ -6,7 +6,7 @@ import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
 const DIR_NAME = '.pull-quest'
 
-const touchRoot = async () => {
+const touchRoot = async (): Promise<string> => {
   const repoRoot = await getRepoRoot()
   const fullPath = path.join(repoRoot, DIR_NAME)
 
@@ -31,13 +31,13 @@ const openFile = async (filePath: string): Promise<Maybe<string>> => {
 const writeFile = async (filePath: string, data: string) => {
   const root = await touchRoot()
   const fullPath = path.join(root, filePath)
-  return fs.writeFileSync(fullPath, data)
+  fs.writeFileSync(fullPath, data)
 }
 
 const deleteFile = async (filePath: string) => {
   const root = await touchRoot()
   const fullPath = path.join(root, filePath)
-  return fs.unlinkSync(fullPath)
+  fs.unlinkSync(fullPath)
 }
 
 export const startReview = async (pr_number: number) => {
