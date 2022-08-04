@@ -23,3 +23,11 @@ export const printInfo = (info: PrintableInfo, message?: string) => {
     if (info[key]) console.info(`${infoLabels[key]}: ${info[key]}`)
   })
 }
+
+export type FileResult<T = unknown> = {
+  ok: true;
+  data?: T;
+} | {
+  ok: false;
+  error: string;
+}

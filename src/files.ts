@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { getRepoRoot } from './git'
-import { Maybe } from './utils'
+import { FileResult, Maybe } from './utils'
 import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
 const DIR_NAME = '.pull-quest'
@@ -40,33 +40,36 @@ const deleteFile = async (filePath: string) => {
   fs.unlinkSync(fullPath)
 }
 
-export const startReview = async (pr_number: number) => {
+export const startReview = async (prNumber: number): Promise<FileResult> => {
   await touchRoot()
-  writeFile(PQ_STRUCTURE.pr, String(pr_number))
+
+  writeFile(PQ_STRUCTURE.pr, String(prNumber))
   writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
   writeFile(PQ_STRUCTURE.commit, '0')
+
+  return { ok: true }
 }
 
-export const openPR = async (): Promise<Maybe<number>> => {
+export const openPR = async (): Promise<FileResult<number>> => {
   const file = await openFile(PQ_STRUCTURE.pr)
   if (!file) {
-    return null
+    return { ok: false, error: 'no pull request file present' }
   }
 
-  return parseInt(file)
+  return { ok: true, data: parseInt(file) }
 }
 
-export const openStatus = async (): Promise<ReviewStatus> => {
+export const openStatus = async (): Promise<FileResult<ReviewStatus>> => {
   const file = await openFile(PQ_STRUCTURE.status)
   if (!file) {
     writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
-    return ReviewStatus.Comment
+    return { ok: true, data: ReviewStatus.Comment }
   }
 
-  return statusFromString(file)
+  return { ok: true, data: statusFromString(file) }
 }
 
-export const abortPR = async () => {
+export const abortPR = async (): Promise<FileResult> => {
   const root = await touchRoot()
 
   Object.keys(PQ_STRUCTURE).map(k => {
@@ -74,13 +77,54 @@ export const abortPR = async () => {
       deleteFile(PQ_STRUCTURE[k])
     }
   })
+
+  return { ok: true }
 }
 
-export const saveStatus = (s: ReviewStatus) => {
+export const saveStatus = (s: ReviewStatus): FileResult => {
   writeFile(PQ_STRUCTURE.status, s)
+
+  return { ok: true }
 }
 
-export const savePRCommits = (ids: string[]) => {
+export const savePRCommits = (ids: string[]): FileResult => {
   const data = ids.join('\n')
   writeFile(PQ_STRUCTURE.prCommits, data)
+
+  return { ok: true }
 }
+
+export const openPRCommits = async (): Promise<FileResult<string[]>> => {
+  const file = await openFile(PQ_STRUCTURE.prCommits)
+  if (!file) {
+    return { ok: false, error: 'no commits file present' }
+  }
+
+  return { ok: true, data: file.split('\n') }
+}
+
+export const changeCommitBy = async (n: number): Promise<FileResult> => {
+  const file = await openFile(PQ_STRUCTURE.commit)
+  const commit = file ? parseInt(file) : 0
+
+  const newCommit = commit + n
+  if (newCommit < 0) {
+    return { ok: false, error: `${newCommit} is not a valid commit index` }
+  }
+
+  const commitsFile = await openFile(PQ_STRUCTURE.commits)
+  const commits = commitsFile.split('\n')
+
+  const numCommits = commits.length
+  if (newCommit >= numCommits) {
+    return { ok: false, error: `${newCommit} is greater than the number of commits to evaluate` }
+  }
+
+  writeFile(PQ_STRUCTURE.commit, String(newCommit))
+
+  return { ok: true }
+}
+
+export const nextCommit = () => changeCommitBy(1)
+
+export const prevCommit = () => changeCommitBy(-1)
