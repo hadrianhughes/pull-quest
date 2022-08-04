@@ -4,9 +4,9 @@ import { ReviewStatus } from '../domain'
 
 export const makeStatusCommand = () => {
   const statusSetter = (s: ReviewStatus) => async () => {
-    const prNumber = await openPR()
-    if (!prNumber) {
-      console.info('NO REVIEW IN PROGRESS')
+    const { ok, error } = await openPR()
+    if (!ok) {
+      console.info(error)
       return
     }
 
@@ -19,13 +19,18 @@ export const makeStatusCommand = () => {
 
   status
     .action(async () => {
-      const prNumber = await openPR()
-      if (!prNumber) {
-        console.info('NO REVIEW IN PROGRESS')
+      const { ok: okPR, error: prError } = await openPR()
+      if (!okPR) {
+        console.info(prError)
         return
       }
 
-      const status = await openStatus()
+      const { ok: okStatus, error: statusError } = await openStatus()
+      if (!okStatus) {
+        console.info(statusError)
+        return
+      }
+
       console.info(`Review status: ${status}`)
     })
 

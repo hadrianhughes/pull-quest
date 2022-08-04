@@ -53,7 +53,7 @@ export const startReview = async (prNumber: number): Promise<FileResult> => {
 export const openPR = async (): Promise<FileResult<number>> => {
   const file = await openFile(PQ_STRUCTURE.pr)
   if (!file) {
-    return { ok: false, error: 'no pull request file present' }
+    return { ok: false, error: 'No pull request file present' }
   }
 
   return { ok: true, data: parseInt(file) }
@@ -97,7 +97,7 @@ export const savePRCommits = (ids: string[]): FileResult => {
 export const openPRCommits = async (): Promise<FileResult<string[]>> => {
   const file = await openFile(PQ_STRUCTURE.prCommits)
   if (!file) {
-    return { ok: false, error: 'no commits file present' }
+    return { ok: false, error: 'No commits file present' }
   }
 
   return { ok: true, data: file.split('\n') }
@@ -109,20 +109,20 @@ export const changeCommitBy = async (n: number): Promise<FileResult> => {
 
   const newCommit = commit + n
   if (newCommit < 0) {
-    return { ok: false, error: `${newCommit} is not a valid commit index` }
+    return { ok: false, error: `Already at the first commit` }
   }
 
-  const commitsFile = await openFile(PQ_STRUCTURE.commits)
+  const commitsFile = await openFile(PQ_STRUCTURE.prCommits)
   const commits = commitsFile.split('\n')
 
   const numCommits = commits.length
   if (newCommit >= numCommits) {
-    return { ok: false, error: `${newCommit} is greater than the number of commits to evaluate` }
+    return { ok: false, error: 'Already at the last commit' }
   }
 
   writeFile(PQ_STRUCTURE.commit, String(newCommit))
 
-  return { ok: true }
+  return { ok: true, data: commits[newCommit] }
 }
 
 export const nextCommit = () => changeCommitBy(1)

@@ -8,9 +8,9 @@ export const makeAbortCommand = () => {
   abort
     .option('-y, --yes', 'bypass prompt to confirm abort')
     .action(async (options) => {
-      const prNumber = await openPR()
-      if (!prNumber) {
-        console.info('NO REVIEW IN PROGRESS')
+      const { ok, error } = await openPR()
+      if (!ok) {
+        console.info(error)
         return
       }
 

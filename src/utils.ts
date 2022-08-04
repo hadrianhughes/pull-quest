@@ -25,9 +25,7 @@ export const printInfo = (info: PrintableInfo, message?: string) => {
 }
 
 export type FileResult<T = unknown> = {
-  ok: true;
+  ok: boolean;
   data?: T;
-} | {
-  ok: false;
-  error: string;
+  error?: string;
 }

@@ -8,13 +8,13 @@ export const makeSummaryCommand = () => {
 
   summary
     .action(async () => {
-      const prNumber = await openPR()
-      if (!prNumber) {
-        console.info('NO REVIEW IN PROGRESS')
+      const { ok, error, data: prNumber } = await openPR()
+      if (!ok) {
+        console.info(error)
         return
       }
 
-      const status = await openStatus()
+      const { data: status } = await openStatus()
 
       const pr = await getPullRequest(prNumber)
       printInfo({

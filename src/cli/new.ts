@@ -9,16 +9,20 @@ export const makeNewCommand = () => {
   newCommand
     .argument('<pr_number>', 'number/id of the pull request for which to start a review')
     .action(async (id: number) => {
-      const current = await openPR()
-      if (current) {
-        console.info('REVIEW ALREADY IN PROGRESS\nFinish the current review or use `pq abort`')
+      const { ok: okPR } = await openPR()
+      if (okPR) {
+        console.info('Review already in progress. Finish the current review or use `pq abort`')
         return
       }
 
       const pr = await getPullRequest(id)
       startReview(id)
 
-      const status = await openStatus()
+      const { ok: okStatus, error, data: status } = await openStatus()
+      if (!okStatus) {
+        console.error(error)
+        return
+      }
 
       const commits = await getPRCommits(id)
       savePRCommits(commits)
