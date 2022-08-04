@@ -44,6 +44,7 @@ export const startReview = async (pr_number: number) => {
   await touchRoot()
   writeFile(PQ_STRUCTURE.pr, String(pr_number))
   writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
+  writeFile(PQ_STRUCTURE.commit, '0')
 }
 
 export const openPR = async (): Promise<Maybe<number>> => {
