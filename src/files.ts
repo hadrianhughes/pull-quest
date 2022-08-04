@@ -78,3 +78,8 @@ export const abortPR = async () => {
 export const setStatus = (s: ReviewStatus) => {
   writeFile(PQ_STRUCTURE.status, s)
 }
+
+export const setPRCommits = (ids: string[]) => {
+  const data = ids.join('\n')
+  writeFile(PQ_STRUCTURE.prCommits, data)
+}

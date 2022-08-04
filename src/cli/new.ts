@@ -1,6 +1,6 @@
 import { Command } from 'commander'
-import { getPR, getStatus, startReview } from '../files'
-import { getPullRequest } from '../github'
+import { getPR, getStatus, setPRCommits, startReview } from '../files'
+import { getPRCommits, getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
 export const makeNewCommand = () => {
@@ -19,6 +19,9 @@ export const makeNewCommand = () => {
       startReview(id)
 
       const status = await getStatus()
+
+      const commits = await getPRCommits(id)
+      setPRCommits(commits)
 
       printInfo({
         repository: pr.head.repo.full_name,

@@ -15,16 +15,44 @@ const detailsFromRemote = (remote: string) => {
   }
 }
 
-export const getPullRequest = async (pull_number: number) => {
+export const getPullRequest = async (pullNumber: number) => {
   const remote = await getRemote()
   const { owner, repo } = detailsFromRemote(remote)
 
   try {
-    const { data } = await ok.rest.pulls.get({ owner, repo, pull_number })
+    const { data } = await ok.rest.pulls.get({
+      owner,
+      repo,
+      pull_number: pullNumber,
+    })
+
     return data
   } catch (err) {
     if (err.status === 404) {
-      throw new Error(`pull request number ${pull_number} does not exist`)
+      throw new Error(`pull request number ${pullNumber} does not exist`)
+    }
+
+    throw err
+  }
+}
+
+export const getPRCommits = async (pullNumber: number) => {
+  const remote = await getRemote()
+  const { owner, repo } = detailsFromRemote(remote)
+
+  try {
+    const { data } = await ok.rest.pulls.listCommits({
+      owner,
+      repo,
+      pull_number: pullNumber,
+    })
+
+    const commitIDs = (data ?? []).map(c => c.sha)
+
+    return commitIDs
+  } catch (err) {
+    if (err.status === 404) {
+      throw new Error(`pull request number ${pullNumber} does not exist`)
     }
 
     throw err

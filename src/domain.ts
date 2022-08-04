@@ -3,6 +3,7 @@ import { Dict } from './utils'
 export const PQ_STRUCTURE: Dict<string> = {
   pr: 'pr',
   status: 'status',
+  prCommits: 'pr_commits',
 }
 
 export enum ReviewStatus {
