@@ -6,9 +6,9 @@ import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
 const DIR_NAME = '.pull-quest'
 
-const touchDir = async (dirPath: string) => {
+const touchRoot = async () => {
   const repoRoot = await getRepoRoot()
-  const fullPath = path.join(repoRoot, DIR_NAME, dirPath)
+  const fullPath = path.join(repoRoot, DIR_NAME)
 
   if (!fs.existsSync(fullPath)) {
     fs.mkdirSync(fullPath)
@@ -16,8 +16,6 @@ const touchDir = async (dirPath: string) => {
 
   return fullPath
 }
-
-const touchRoot = () => touchDir(DIR_NAME)
 
 const openFile = async (filePath: string): Promise<Maybe<string>> => {
   const root = await touchRoot()
@@ -67,8 +65,14 @@ export const getStatus = async (): Promise<ReviewStatus> => {
   return statusFromString(file)
 }
 
-export const abortPR = () => {
-  Object.keys(PQ_STRUCTURE).map(k => deleteFile(PQ_STRUCTURE[k]))
+export const abortPR = async () => {
+  const root = await touchRoot()
+
+  Object.keys(PQ_STRUCTURE).map(k => {
+    if (fs.existsSync(path.join(root, PQ_STRUCTURE[k]))) {
+      deleteFile(PQ_STRUCTURE[k])
+    }
+  })
 }
 
 export const setStatus = (s: ReviewStatus) => {
