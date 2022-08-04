@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { getPR, getStatus, setPRCommits, startReview } from '../files'
+import { openPR, openStatus, savePRCommits, startReview } from '../files'
 import { getPRCommits, getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
@@ -9,7 +9,7 @@ export const makeNewCommand = () => {
   newCommand
     .argument('<pr_number>', 'number/id of the pull request for which to start a review')
     .action(async (id: number) => {
-      const current = await getPR()
+      const current = await openPR()
       if (current) {
         console.info('REVIEW ALREADY IN PROGRESS\nFinish the current review or use `pq abort`')
         return
@@ -18,10 +18,10 @@ export const makeNewCommand = () => {
       const pr = await getPullRequest(id)
       startReview(id)
 
-      const status = await getStatus()
+      const status = await openStatus()
 
       const commits = await getPRCommits(id)
-      setPRCommits(commits)
+      savePRCommits(commits)
 
       printInfo({
         repository: pr.head.repo.full_name,

@@ -46,7 +46,7 @@ export const startReview = async (pr_number: number) => {
   writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
 }
 
-export const getPR = async (): Promise<Maybe<number>> => {
+export const openPR = async (): Promise<Maybe<number>> => {
   const file = await openFile(PQ_STRUCTURE.pr)
   if (!file) {
     return null
@@ -55,7 +55,7 @@ export const getPR = async (): Promise<Maybe<number>> => {
   return parseInt(file)
 }
 
-export const getStatus = async (): Promise<ReviewStatus> => {
+export const openStatus = async (): Promise<ReviewStatus> => {
   const file = await openFile(PQ_STRUCTURE.status)
   if (!file) {
     writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
@@ -75,11 +75,11 @@ export const abortPR = async () => {
   })
 }
 
-export const setStatus = (s: ReviewStatus) => {
+export const saveStatus = (s: ReviewStatus) => {
   writeFile(PQ_STRUCTURE.status, s)
 }
 
-export const setPRCommits = (ids: string[]) => {
+export const savePRCommits = (ids: string[]) => {
   const data = ids.join('\n')
   writeFile(PQ_STRUCTURE.prCommits, data)
 }

@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { getPR, getStatus } from '../files'
+import { openPR, openStatus } from '../files'
 import { getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
@@ -8,13 +8,13 @@ export const makeSummaryCommand = () => {
 
   summary
     .action(async () => {
-      const prNumber = await getPR()
+      const prNumber = await openPR()
       if (!prNumber) {
         console.info('NO REVIEW IN PROGRESS')
         return
       }
 
-      const status = await getStatus()
+      const status = await openStatus()
 
       const pr = await getPullRequest(prNumber)
       printInfo({

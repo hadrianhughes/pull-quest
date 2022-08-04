@@ -1,16 +1,16 @@
 import { Command } from 'commander'
-import { getPR, getStatus, setStatus } from '../files'
+import { openPR, openStatus, saveStatus } from '../files'
 import { ReviewStatus } from '../domain'
 
 export const makeStatusCommand = () => {
   const statusSetter = (s: ReviewStatus) => async () => {
-    const prNumber = await getPR()
+    const prNumber = await openPR()
     if (!prNumber) {
       console.info('NO REVIEW IN PROGRESS')
       return
     }
 
-    setStatus(s)
+    saveStatus(s)
 
     console.info(`Review status: ${s}`)
   }
@@ -19,13 +19,13 @@ export const makeStatusCommand = () => {
 
   status
     .action(async () => {
-      const prNumber = await getPR()
+      const prNumber = await openPR()
       if (!prNumber) {
         console.info('NO REVIEW IN PROGRESS')
         return
       }
 
-      const status = await getStatus()
+      const status = await openStatus()
       console.info(`Review status: ${status}`)
     })
 
