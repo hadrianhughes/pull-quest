@@ -103,6 +103,22 @@ export const openPRCommits = async (): Promise<FileResult<string[]>> => {
   return { ok: true, data: file.split('\n') }
 }
 
+export const openCommit = async (): Promise<FileResult<string>> => {
+  const file = await openFile(PQ_STRUCTURE.commit)
+  if (!file) {
+    return { ok: false, error: 'No active commit file present' }
+  }
+
+  const commit = parseInt(file)
+
+  const { ok, error, data: commits } = await openPRCommits()
+  if (!ok) {
+    return { ok: false, error }
+  }
+
+  return { ok: true, data: commits[commit] }
+}
+
 export const changeCommitBy = async (n: number): Promise<FileResult> => {
   const file = await openFile(PQ_STRUCTURE.commit)
   const commit = file ? parseInt(file) : 0

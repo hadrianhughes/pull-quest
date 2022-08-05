@@ -1,5 +1,6 @@
 import { program } from 'commander'
 import { makeAbortCommand } from './abort'
+import { makeDiffCommand } from './diff'
 import { makeBackCommand, makeNextCommand } from './navigate'
 import { makeNewCommand } from './new'
 import { makeStatusCommand } from './status'
@@ -11,5 +12,6 @@ program.addCommand(makeStatusCommand())
 program.addCommand(makeSummaryCommand())
 program.addCommand(makeNextCommand())
 program.addCommand(makeBackCommand())
+program.addCommand(makeDiffCommand())
 
 export default program
