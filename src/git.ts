@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 
-const run = (cmd: string): Promise<string> => new Promise((resolve, reject) => {
+const _exec = (cmd: string): Promise<string> => new Promise((resolve, reject) => {
   exec(cmd, (error, stdout, stderr) => {
     if (error) return reject(error)
     if (stderr) return reject(stderr)
@@ -8,20 +8,15 @@ const run = (cmd: string): Promise<string> => new Promise((resolve, reject) => {
   })
 })
 
-export const getRepoRoot = async () => {
+const run = async (command: string, errorText: string) => {
   try {
-    const stdout = await run('git rev-parse --show-toplevel')
+    const stdout = await _exec(command)
     return stdout.trim()
   } catch (err) {
-    throw new Error(`error getting repo root: ${err}`)
+    throw new Error(`${errorText}: ${err}`)
   }
 }
 
-export const getRemote = async () => {
-  try {
-    const stdout = await run('git remote get-url origin')
-    return stdout.trim()
-  } catch (err) {
-    throw new Error(`error getting remote: ${err}`)
-  }
-}
+export const getRepoRoot = () => run('git rev-parse --show-toplevel', 'error getting repo root')
+
+export const getRemote = () => run('git remote get-url origin', 'error getting remote')
