@@ -25,13 +25,13 @@ export const makeStatusCommand = () => {
         return
       }
 
-      const { ok: okStatus, error: statusError } = await openStatus()
+      const { ok: okStatus, error: statusError, data: s } = await openStatus()
       if (!okStatus) {
         console.info(statusError)
         return
       }
 
-      console.info(`Review status: ${status}`)
+      console.info(`Review status: ${s}`)
     })
 
     status
