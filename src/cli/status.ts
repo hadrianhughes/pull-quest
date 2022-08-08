@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { openPR, openStatus, saveStatus } from '../files'
-import { ReviewStatus } from '../domain'
+import { ReviewStatus, statusIcons } from '../domain'
 
 export const makeStatusCommand = () => {
   const statusSetter = (s: ReviewStatus) => async () => {
@@ -12,7 +12,7 @@ export const makeStatusCommand = () => {
 
     saveStatus(s)
 
-    console.info(`Review status: ${s}`)
+    console.info(`Review status: ${s} ${statusIcons[s]}`)
   }
 
   const status = new Command('status')
@@ -31,7 +31,7 @@ export const makeStatusCommand = () => {
         return
       }
 
-      console.info(`Review status: ${s}`)
+      console.info(`Review status: ${s} ${statusIcons[s]}`)
     })
 
     status

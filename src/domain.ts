@@ -14,6 +14,12 @@ export enum ReviewStatus {
   Approved = 'approved',
 }
 
+export const statusIcons = {
+  [ReviewStatus.Comment]: '💬',
+  [ReviewStatus.RequestChanges]: '🚧',
+  [ReviewStatus.Approved]: '✅',
+}
+
 export const statusFromString = (s: string): ReviewStatus => {
   switch (s) {
     case ReviewStatus.Comment:
