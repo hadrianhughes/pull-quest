@@ -138,7 +138,7 @@ export const changeCommitBy = async (n: number): Promise<FileResult> => {
 
   const numCommits = commits.length
   if (newCommit >= numCommits) {
-    return { ok: false, error: 'Already at the last commit' }
+    return { ok: false, error: 'Already at the last commit.\nUse `pq submit` if you\'ve finished your review.' }
   }
 
   writeFile(PQ_STRUCTURE.commit, String(newCommit))
