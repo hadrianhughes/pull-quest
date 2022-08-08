@@ -22,27 +22,19 @@ export const getRepoRoot = () => run('git rev-parse --show-toplevel', 'error get
 
 export const getRemote = () => run('git remote get-url origin', 'error getting remote')
 
-export const runDiff = async (commit: string) => {
-  const diffFilesResult = await run(`git diff --name-only ${commit}`, 'error getting files to diff')
-  const diffFiles = diffFilesResult.split('\n')
+const formatDiff = (raw: string): string => {
+  const lines = raw.split('\n')
+  const diffHead = lines.slice(0, 6)
 
-  const diffs = []
+  const diffBody = lines.slice(6)
+  const diffBodyWithNumbers = diffBody.map((l, i) => `${i + 1}\t${l}`)
 
-  for (const f of diffFiles) {
-    const rawDiff = await run(`git diff --color=always ${commit} -- ${f}`, `error diffing file ${f} at commit ${commit}`)
-    const diffLines = rawDiff.split('\n')
-    const diffHead = diffLines.slice(0, 6)
+  const fullDiff = [...diffHead, ...diffBodyWithNumbers].join('\n')
 
-    const diffBody = diffLines.slice(6)
-    const diffBodyWithNumbers = diffBody.map((l, i) => `${i + 1}\t${l}`)
+  return fullDiff
+}
 
-    const fullDiff = [...diffHead, ...diffBodyWithNumbers].join('\n')
-    diffs.push(fullDiff)
-  }
-
-  const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
-  await saveDiff(diffsString)
-
+const displayDiff = async () => {
   const filePath = await getPathToEntry('diff')
 
   const displaySpawn = spawn('less', [filePath], {
@@ -51,4 +43,31 @@ export const runDiff = async (commit: string) => {
   })
 
   displaySpawn.on('exit', process.exit)
+}
+
+export const runDiff = async (commit: string) => {
+  const diffFilesResult = await run(`git diff --name-only ${commit}`, 'error getting files to diff')
+  const diffFiles = diffFilesResult.split('\n')
+
+  const diffs = []
+
+  for (const f of diffFiles) {
+    const rawDiff = await run(`git diff --color=always ${commit} -- ${f}`, `error diffing file ${f} at commit ${commit}`)
+    const formattedDiff = formatDiff(rawDiff)
+    diffs.push(formattedDiff)
+  }
+
+  const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
+  await saveDiff(diffsString)
+
+  displayDiff()
+}
+
+export const runDiffForFile = async (commit: string, file: string) => {
+  const diffResult = await run(`git diff --color=always ${commit} -- ${file}`, `error diffing file ${file} at commit ${commit}`)
+  const formattedDiff = formatDiff(diffResult)
+
+  await saveDiff(formattedDiff)
+
+  displayDiff()
 }

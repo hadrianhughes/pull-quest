@@ -1,19 +1,24 @@
 import { Command } from 'commander'
 import { openCommit } from '../files'
-import { runDiff } from '../git'
+import { runDiff, runDiffForFile } from '../git'
 
 export const makeDiffCommand = () => {
   const diff = new Command('diff')
 
   diff
-    .action(async () => {
+    .option('-f, --file <string>', 'file to view the diff of')
+    .action(async (options) => {
       const { ok: fileOK, error: fileError, data: commit } = await openCommit()
       if (!fileOK) {
         console.info(fileError)
         return
       }
 
-      await runDiff(commit)
+      if (options.file) {
+        await runDiffForFile(commit, options.file)
+      } else {
+        await runDiff(commit)
+      }
     })
 
   return diff
