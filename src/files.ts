@@ -4,7 +4,7 @@ import { getRepoRoot } from './git'
 import { FileResult, Maybe } from './utils'
 import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
-const DIR_NAME = '.pull-quest'
+export const DIR_NAME = '.pull-quest'
 
 const touchRoot = async (): Promise<string> => {
   const repoRoot = await getRepoRoot()
@@ -38,6 +38,11 @@ const deleteFile = async (filePath: string) => {
   const root = await touchRoot()
   const fullPath = path.join(root, filePath)
   fs.unlinkSync(fullPath)
+}
+
+export const getPathToEntry = async (entry: keyof typeof PQ_STRUCTURE): Promise<string> => {
+  const repoRoot = await getRepoRoot()
+  return path.join(repoRoot, DIR_NAME, PQ_STRUCTURE[entry])
 }
 
 export const startReview = async (prNumber: number): Promise<FileResult> => {
@@ -144,3 +149,5 @@ export const changeCommitBy = async (n: number): Promise<FileResult> => {
 export const nextCommit = () => changeCommitBy(1)
 
 export const prevCommit = () => changeCommitBy(-1)
+
+export const saveDiff = (diff: string) => writeFile(PQ_STRUCTURE.diff, diff)

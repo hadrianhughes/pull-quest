@@ -1,4 +1,5 @@
-import { exec } from 'child_process'
+import { exec, spawn } from 'child_process'
+import { getPathToEntry, saveDiff } from './files'
 
 const _exec = (cmd: string): Promise<string> => new Promise((resolve, reject) => {
   exec(cmd, (error, stdout, stderr) => {
@@ -40,5 +41,14 @@ export const runDiff = async (commit: string) => {
   }
 
   const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
-  console.info(diffsString)
+  await saveDiff(diffsString)
+
+  const filePath = await getPathToEntry('diff')
+
+  const displaySpawn = spawn('less', [filePath], {
+    stdio: 'inherit',
+    detached: true,
+  })
+
+  displaySpawn.on('exit', process.exit)
 }
