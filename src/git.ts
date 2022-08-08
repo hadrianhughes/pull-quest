@@ -1,4 +1,4 @@
-import { exec, spawn } from 'child_process'
+import { exec } from 'child_process'
 
 const _exec = (cmd: string): Promise<string> => new Promise((resolve, reject) => {
   exec(cmd, (error, stdout, stderr) => {
@@ -22,10 +22,23 @@ export const getRepoRoot = () => run('git rev-parse --show-toplevel', 'error get
 export const getRemote = () => run('git remote get-url origin', 'error getting remote')
 
 export const runDiff = async (commit: string) => {
-  const lessSpawn = spawn('git', ['diff', commit], {
-    stdio: 'inherit',
-    detached: true,
-  })
+  const diffFilesResult = await run(`git diff --name-only ${commit}`, 'error getting files to diff')
+  const diffFiles = diffFilesResult.split('\n')
 
-  lessSpawn.on('exit', process.exit)
+  const diffs = []
+
+  for (const f of diffFiles) {
+    const rawDiff = await run(`git diff --color=always ${commit} -- ${f}`, `error diffing file ${f} at commit ${commit}`)
+    const diffLines = rawDiff.split('\n')
+    const diffHead = diffLines.slice(0, 6)
+
+    const diffBody = diffLines.slice(6)
+    const diffBodyWithNumbers = diffBody.map((l, i) => `${i + 1}\t${l}`)
+
+    const fullDiff = [...diffHead, ...diffBodyWithNumbers].join('\n')
+    diffs.push(fullDiff)
+  }
+
+  const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
+  console.info(diffsString)
 }
