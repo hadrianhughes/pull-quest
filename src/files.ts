@@ -35,6 +35,12 @@ const writeFile = async (filePath: string, data: string) => {
   fs.writeFileSync(fullPath, data)
 }
 
+const appendFile = async (filePath: string, data: string) => {
+  const root = await touchRoot()
+  const fullPath = path.join(root, filePath)
+  fs.appendFileSync(fullPath, data)
+}
+
 const deleteFile = async (filePath: string) => {
   const root = await touchRoot()
   const fullPath = path.join(root, filePath)
@@ -96,6 +102,15 @@ export const saveStatus = async (s: ReviewStatus): Promise<FileResult> => {
 export const savePRCommits = async (ids: string[]): Promise<FileResult> => {
   const data = ids.join('\n')
   await writeFile(PQ_STRUCTURE.prCommits, data)
+
+  return { ok: true }
+}
+
+export const saveComment = async (file: string, lineNumber: number, content: string): Promise<FileResult> => {
+  const dataHeader = `${file}:${lineNumber}`
+  const data = [dataHeader, content, '--PQ END OF COMMENT--\n\n'].join('\n\n')
+
+  await appendFile(PQ_STRUCTURE.comments, data)
 
   return { ok: true }
 }
