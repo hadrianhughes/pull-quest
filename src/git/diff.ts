@@ -1,5 +1,4 @@
-import { PQ_STRUCTURE } from '../domain'
-import { displayEntry, saveDiff } from '../files'
+import { saveDiff } from '../files'
 import { run } from './base'
 
 const formatDiff = (raw: string): string => {
@@ -25,7 +24,7 @@ export const getChangedFiles = async (commit: string): Promise<string[]> => {
   return files
 }
 
-export const runDiff = async (commit: string) => {
+export const produceDiff = async (commit: string) => {
   const diffFiles = await getChangedFiles(commit)
   const diffs: string[] = []
 
@@ -36,14 +35,9 @@ export const runDiff = async (commit: string) => {
 
   const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
   await saveDiff(diffsString)
-
-  displayEntry(PQ_STRUCTURE.diff)
 }
 
-export const runDiffForFile = async (commit: string, file: string) => {
+export const produceDiffForFile = async (commit: string, file: string) => {
   const diff = await diffFileCommit(commit, file)
-
   await saveDiff(diff)
-
-  displayEntry(PQ_STRUCTURE.diff)
 }
