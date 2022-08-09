@@ -1,3 +1,5 @@
+import { ReviewStatus } from './domain'
+
 export type Maybe<T> = T | null
 
 export type Dict<T> = { [key: string]: T }
@@ -14,6 +16,12 @@ export const infoLabels: PrintableInfo = {
   repository: 'Repository',
   pullRequest: 'Pull Request',
   status: 'Status',
+}
+
+export const statusIcons = {
+  [ReviewStatus.Comment]: '💬',
+  [ReviewStatus.RequestChanges]: '🚧',
+  [ReviewStatus.Approved]: '✅',
 }
 
 export const printInfo = (info: PrintableInfo, message?: string) => {

@@ -1,6 +1,7 @@
 import { Command } from 'commander'
 import { openPR, openStatus, saveStatus } from '../files'
-import { ReviewStatus, statusIcons } from '../domain'
+import { ReviewStatus } from '../domain'
+import { statusIcons } from '../utils'
 
 export const makeStatusCommand = () => {
   const statusSetter = (s: ReviewStatus) => async () => {
