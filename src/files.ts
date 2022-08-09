@@ -163,3 +163,20 @@ export const displayEntry = async (entry: keyof typeof PQ_STRUCTURE) => {
 
   displaySpawn.on('exit', process.exit)
 }
+
+export const takeEditorInput = async (): Promise<string> => {
+  const filePath = await getPathToEntry('editBuffer')
+
+  const editSpawn = spawn('vim', [filePath], {
+    stdio: 'inherit',
+    detached: true,
+  })
+
+  await new Promise(resolve => {
+    editSpawn.on('exit', resolve)
+  })
+
+  const input = await openFile(PQ_STRUCTURE.editBuffer)
+
+  return input
+}

@@ -6,6 +6,7 @@ export const PQ_STRUCTURE: Dict<string> = {
   prCommits: 'pr_commits',
   commit: 'commit',
   diff: 'diff',
+  editBuffer: 'edit_buffer',
 }
 
 export enum ReviewStatus {

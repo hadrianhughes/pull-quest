@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { openPR } from '../files'
+import { takeEditorInput, openPR } from '../files'
 
 export const makeCommentCommand = () => {
   const comment = new Command('comment')
@@ -13,7 +13,8 @@ export const makeCommentCommand = () => {
         console.info(errorPR)
       }
 
-      console.info(file, lineNumber)
+      const msg = await takeEditorInput()
+      console.log(msg)
     })
 
   return comment
