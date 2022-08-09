@@ -106,8 +106,8 @@ export const savePRCommits = async (ids: string[]): Promise<FileResult> => {
   return { ok: true }
 }
 
-export const saveComment = async (file: string, lineNumber: number, content: string): Promise<FileResult> => {
-  const dataHeader = `${file}:${lineNumber}`
+export const saveComment = async (file: string, lineNumber: number, commit: string, content: string): Promise<FileResult> => {
+  const dataHeader = `${file}:${lineNumber}@${commit}`
   const data = [dataHeader, content, '--PQ END OF COMMENT--\n\n'].join('\n\n')
 
   await appendFile(PQ_STRUCTURE.comments, data)

@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { saveComment, takeEditorInput, openPR } from '../files'
+import { saveComment, takeEditorInput, openPR, openCommit } from '../files'
 
 export const makeCommentCommand = () => {
   const comment = new Command('comment')
@@ -14,7 +14,13 @@ export const makeCommentCommand = () => {
       }
 
       const { data: msg } = await takeEditorInput()
-      await saveComment(file, lineNumber, msg)
+
+      const { ok: okCommit, error: commitErr, data: commit } = await openCommit()
+      if (!okCommit) {
+        console.info(commitErr)
+      }
+
+      await saveComment(file, lineNumber, commit, msg)
 
       console.info(`Comment saved for ${file}:${lineNumber}:\n\n${msg}`)
     })
