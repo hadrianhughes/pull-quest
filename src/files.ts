@@ -180,6 +180,7 @@ export const displayEntry = async (entry: keyof typeof PQ_STRUCTURE) => {
 }
 
 export const takeEditorInput = async (): Promise<string> => {
+  await deleteFile(PQ_STRUCTURE.editBuffer)
   const filePath = await getPathToEntry('editBuffer')
 
   const editSpawn = spawn('vim', [filePath], {
