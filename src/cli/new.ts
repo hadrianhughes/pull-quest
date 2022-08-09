@@ -25,7 +25,7 @@ export const makeNewCommand = () => {
       }
 
       const commits = await getPRCommits(id)
-      savePRCommits(commits)
+      await savePRCommits(commits)
 
       printInfo({
         repository: pr.head.repo.full_name,

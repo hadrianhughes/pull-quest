@@ -87,15 +87,15 @@ export const abortPR = async (): Promise<FileResult> => {
   return { ok: true }
 }
 
-export const saveStatus = (s: ReviewStatus): FileResult => {
-  writeFile(PQ_STRUCTURE.status, s)
+export const saveStatus = async (s: ReviewStatus): Promise<FileResult> => {
+  await writeFile(PQ_STRUCTURE.status, s)
 
   return { ok: true }
 }
 
-export const savePRCommits = (ids: string[]): FileResult => {
+export const savePRCommits = async (ids: string[]): Promise<FileResult> => {
   const data = ids.join('\n')
-  writeFile(PQ_STRUCTURE.prCommits, data)
+  await writeFile(PQ_STRUCTURE.prCommits, data)
 
   return { ok: true }
 }
