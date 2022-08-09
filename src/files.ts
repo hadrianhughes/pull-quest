@@ -1,3 +1,4 @@
+import { spawn } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import { getRepoRoot } from './git'
@@ -151,3 +152,14 @@ export const nextCommit = () => changeCommitBy(1)
 export const prevCommit = () => changeCommitBy(-1)
 
 export const saveDiff = (diff: string) => writeFile(PQ_STRUCTURE.diff, diff)
+
+export const displayEntry = async (entry: keyof typeof PQ_STRUCTURE) => {
+  const filePath = await getPathToEntry(entry)
+
+  const displaySpawn = spawn('less', [filePath], {
+    stdio: 'inherit',
+    detached: true,
+  })
+
+  displaySpawn.on('exit', process.exit)
+}

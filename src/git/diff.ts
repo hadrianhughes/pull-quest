@@ -1,5 +1,5 @@
-import { spawn } from 'child_process'
-import { getPathToEntry, saveDiff } from '../files'
+import { PQ_STRUCTURE } from '../domain'
+import { displayEntry, saveDiff } from '../files'
 import { run } from './base'
 
 const formatDiff = (raw: string): string => {
@@ -14,40 +14,36 @@ const formatDiff = (raw: string): string => {
   return fullDiff
 }
 
-const displayDiff = async () => {
-  const filePath = await getPathToEntry('diff')
+const diffFileCommit = async (commit: string, file: string): Promise<string> => {
+  const rawDiff = await run(`git diff --color=always ${commit}^ ${commit} -- ${file}`, `error diffing file ${file} at commit ${commit}`)
+  return formatDiff(rawDiff)
+}
 
-  const displaySpawn = spawn('less', [filePath], {
-    stdio: 'inherit',
-    detached: true,
-  })
-
-  displaySpawn.on('exit', process.exit)
+export const getChangedFiles = async (commit: string): Promise<string[]> => {
+  const result = await run(`git diff --name-only ${commit}^ ${commit}`, 'error getting files to diff')
+  const files = result.split('\n')
+  return files
 }
 
 export const runDiff = async (commit: string) => {
-  const diffFilesResult = await run(`git diff --name-only ${commit}^ ${commit}`, 'error getting files to diff')
-  const diffFiles = diffFilesResult.split('\n')
-
-  const diffs = []
+  const diffFiles = await getChangedFiles(commit)
+  const diffs: string[] = []
 
   for (const f of diffFiles) {
-    const rawDiff = await run(`git diff --color=always ${commit}^ ${commit} -- ${f}`, `error diffing file ${f} at commit ${commit}`)
-    const formattedDiff = formatDiff(rawDiff)
-    diffs.push(formattedDiff)
+    const d = await diffFileCommit(commit, f)
+    diffs.push(d)
   }
 
   const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
   await saveDiff(diffsString)
 
-  displayDiff()
+  displayEntry(PQ_STRUCTURE.diff)
 }
 
 export const runDiffForFile = async (commit: string, file: string) => {
-  const diffResult = await run(`git diff --color=always ${commit}^ ${commit} -- ${file}`, `error diffing file ${file} at commit ${commit}`)
-  const formattedDiff = formatDiff(diffResult)
+  const diff = await diffFileCommit(commit, file)
 
-  await saveDiff(formattedDiff)
+  await saveDiff(diff)
 
-  displayDiff()
+  displayEntry(PQ_STRUCTURE.diff)
 }
