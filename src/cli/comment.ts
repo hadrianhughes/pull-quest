@@ -13,10 +13,10 @@ export const makeCommentCommand = () => {
         console.info(errorPR)
       }
 
-      const msg = await takeEditorInput()
+      const { data: msg } = await takeEditorInput()
       await saveComment(file, lineNumber, msg)
 
-      console.info('Saved comment')
+      console.info(`Comment saved for ${file}:${lineNumber}:\n\n${msg}`)
     })
 
   return comment

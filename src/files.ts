@@ -179,8 +179,10 @@ export const displayEntry = async (entry: keyof typeof PQ_STRUCTURE) => {
   displaySpawn.on('exit', process.exit)
 }
 
-export const takeEditorInput = async (): Promise<string> => {
+export const takeEditorInput = async (): Promise<FileResult<string>> => {
   await deleteFile(PQ_STRUCTURE.editBuffer)
+  await writeFile(PQ_STRUCTURE.editBuffer, '\n# Enter input in this buffer\n# Lines starting with # are ignored')
+
   const filePath = await getPathToEntry('editBuffer')
 
   const editSpawn = spawn('vim', [filePath], {
@@ -193,6 +195,10 @@ export const takeEditorInput = async (): Promise<string> => {
   })
 
   const input = await openFile(PQ_STRUCTURE.editBuffer)
+  const prunedInput = input
+    .split('\n')
+    .filter(l => !/^#/.test(l))
+    .join('\n')
 
-  return input
+  return { ok: true, data: prunedInput }
 }
