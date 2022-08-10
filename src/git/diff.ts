@@ -1,4 +1,3 @@
-import { saveDiff } from '../files'
 import { run } from './base'
 
 const formatDiff = (raw: string): string => {
