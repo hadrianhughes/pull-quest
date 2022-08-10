@@ -7,6 +7,8 @@ import { PQ_STRUCTURE, ReviewStatus, statusFromString } from './domain'
 
 export const DIR_NAME = '.pull-quest'
 
+export const COMMENT_SEPARATOR = '--PQ END OF COMMENT--'
+
 const touchRoot = async (): Promise<string> => {
   const repoRoot = await getRepoRoot()
   const fullPath = path.join(repoRoot, DIR_NAME)
@@ -108,7 +110,7 @@ export const savePRCommits = async (ids: string[]): Promise<FileResult> => {
 
 export const saveComment = async (file: string, lineNumber: number, commit: string, content: string): Promise<FileResult> => {
   const dataHeader = `${file}:${lineNumber}@${commit}`
-  const data = [dataHeader, content, '--PQ END OF COMMENT--\n\n'].join('\n\n')
+  const data = [dataHeader, content, `${COMMENT_SEPARATOR}\n\n`].join('\n\n')
 
   await appendFile(PQ_STRUCTURE.comments, data)
 
@@ -206,4 +208,14 @@ export const takeEditorInput = async (): Promise<FileResult<string>> => {
     .join('\n')
 
   return { ok: true, data: prunedInput }
+}
+
+export const openComments = async (): Promise<FileResult<string>> => {
+  const file = await openFile(PQ_STRUCTURE.comments)
+  const rawComments = file.split(COMMENT_SEPARATOR).slice(0, -1)
+  const formattedComments = rawComments
+    .map(c => c.trim())
+    .join('\n\n')
+
+  return { ok: true, data: formattedComments }
 }

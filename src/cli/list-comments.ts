@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { openPR } from '../files'
+import { openComments, openPR } from '../files'
 
 export const makeListCommentsCommand = () => {
   const listComments = new Command('comments')
@@ -11,7 +11,8 @@ export const makeListCommentsCommand = () => {
         console.info(errorPR)
       }
 
-      console.log('list comments')
+      const { data: comments } = await openComments()
+      console.info(comments)
     })
 
   return listComments
