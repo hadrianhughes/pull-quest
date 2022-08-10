@@ -24,7 +24,7 @@ export const getChangedFiles = async (commit: string): Promise<string[]> => {
   return files
 }
 
-export const produceDiff = async (commit: string) => {
+export const produceDiff = async (commit: string): Promise<string> => {
   const diffFiles = await getChangedFiles(commit)
   const diffs: string[] = []
 
@@ -34,10 +34,10 @@ export const produceDiff = async (commit: string) => {
   }
 
   const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
-  await saveDiff(diffsString)
+  return diffsString
 }
 
-export const produceDiffForFile = async (commit: string, file: string) => {
+export const produceDiffForFile = async (commit: string, file: string): Promise<string> => {
   const diff = await diffFileCommit(commit, file)
-  await saveDiff(diff)
+  return diff
 }

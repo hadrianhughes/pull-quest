@@ -170,10 +170,12 @@ export const prevCommit = () => changeCommitBy(-1)
 
 export const saveDiff = (diff: string) => writeFile(PQ_STRUCTURE.diff, diff)
 
-export const displayEntry = async (entry: keyof typeof PQ_STRUCTURE) => {
-  const filePath = await getPathToEntry(entry)
+export const display = async (data: string) => {
+  await writeFile(PQ_STRUCTURE.viewBuffer, data)
 
-  const displaySpawn = spawn('less', [filePath], {
+  const viewPath = await getPathToEntry('viewBuffer')
+
+  const displaySpawn = spawn('less', [viewPath], {
     stdio: 'inherit',
     detached: true,
   })

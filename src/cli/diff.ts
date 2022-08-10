@@ -1,6 +1,5 @@
 import { Command } from 'commander'
-import { PQ_STRUCTURE } from '../domain'
-import { displayEntry, openCommit } from '../files'
+import { display, openCommit } from '../files'
 import { produceDiff, produceDiffForFile } from '../git'
 
 export const makeDiffCommand = () => {
@@ -15,13 +14,11 @@ export const makeDiffCommand = () => {
         return
       }
 
-      if (options.file) {
-        await produceDiffForFile(commit, options.file)
-      } else {
-        await produceDiff(commit)
-      }
+      const diffResult = options.file
+        ? await produceDiffForFile(commit, options.file)
+        : await produceDiff(commit)
 
-      displayEntry(PQ_STRUCTURE.diff)
+      display(diffResult)
     })
 
   return diff
