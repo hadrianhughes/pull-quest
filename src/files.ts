@@ -180,7 +180,12 @@ export const displayEntry = async (entry: keyof typeof PQ_STRUCTURE) => {
 }
 
 export const takeEditorInput = async (): Promise<FileResult<string>> => {
-  await deleteFile(PQ_STRUCTURE.editBuffer)
+  const bufferPath = await getPathToEntry('editBuffer')
+
+  if (fs.existsSync(bufferPath)) {
+    await deleteFile(PQ_STRUCTURE.editBuffer)
+  }
+
   await writeFile(PQ_STRUCTURE.editBuffer, '\n# Enter input in this buffer\n# Lines starting with # are ignored')
 
   const filePath = await getPathToEntry('editBuffer')
