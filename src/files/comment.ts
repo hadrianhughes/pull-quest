@@ -1,3 +1,4 @@
+import * as clc from 'cli-color'
 import { PQ_STRUCTURE } from '../domain'
 import { FileResult } from '../utils'
 import { appendFile, COMMENT_SEPARATOR, openFile } from './base'
@@ -13,9 +14,14 @@ export const openComments = async (): Promise<FileResult<string>> => {
       const [_, _file, _line, _commit,] = lines[0].match(/^(.+?):(.+?)@(.+?)/)
       const body = lines.slice(1).join('\n')
 
-      return `File:\t${_file}\nLine:\t${_line}\nCommit:\t${_commit}\n${body}`
+      const printInfo = (label: string, value: string) => `${clc.bold(label)}:\t${value}`
+      const fileLine = printInfo('File', _file)
+      const lineLine = printInfo('Line', _line)
+      const commitLine = printInfo('Commit', _commit)
+
+      return [fileLine, lineLine, commitLine, body].join('\n')
     })
-    .join('\n\n')
+    .join('\n\n\n')
 
   return { ok: true, data: formattedComments }
 }
