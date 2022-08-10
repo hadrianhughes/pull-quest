@@ -11,7 +11,11 @@ export const makeListCommentsCommand = () => {
         console.info(errorPR)
       }
 
-      const { data: comments } = await openComments()
+      const { ok: okComments, error: errorComments, data: comments } = await openComments()
+      if (!okComments) {
+        console.info(errorComments)
+      }
+
       display(comments)
     })
 

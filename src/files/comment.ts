@@ -6,7 +6,15 @@ export const openComments = async (): Promise<FileResult<string>> => {
   const file = await openFile(PQ_STRUCTURE.comments)
   const rawComments = file.split(COMMENT_SEPARATOR).slice(0, -1)
   const formattedComments = rawComments
-    .map(c => c.trim())
+    .map(c => {
+      const trimmed = c.trim()
+      const lines = trimmed.split('\n')
+
+      const [_, _file, _line, _commit,] = lines[0].match(/^(.+?):(.+?)@(.+?)/)
+      const body = lines.slice(1).join('\n')
+
+      return `File:\t${_file}\nLine:\t${_line}\nCommit:\t${_commit}\n${body}`
+    })
     .join('\n\n')
 
   return { ok: true, data: formattedComments }
