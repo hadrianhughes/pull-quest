@@ -8,14 +8,18 @@ import { makeNewCommand } from './new'
 import { makeStatusCommand } from './status'
 import { makeSummaryCommand } from './summary'
 
-program.addCommand(makeAbortCommand())
-program.addCommand(makeNewCommand())
-program.addCommand(makeStatusCommand())
-program.addCommand(makeSummaryCommand())
-program.addCommand(makeNextCommand())
-program.addCommand(makeBackCommand())
-program.addCommand(makeDiffCommand())
-program.addCommand(makeCommentCommand())
-program.addCommand(makeListCommentsCommand())
+const commandFns = [
+  makeAbortCommand,
+  makeBackCommand,
+  makeCommentCommand,
+  makeDiffCommand,
+  makeListCommentsCommand,
+  makeNewCommand,
+  makeNextCommand,
+  makeStatusCommand,
+  makeSummaryCommand,
+]
+
+commandFns.forEach(f => program.addCommand(f()))
 
 export default program
