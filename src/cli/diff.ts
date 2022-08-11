@@ -15,8 +15,8 @@ export const makeDiffCommand = () => {
       }
 
       const diffResult = options.file
-        ? await produceDiffForFile(commit, options.file)
-        : await produceDiff(commit)
+        ? await produceDiffForFile(commit, options.file, true)
+        : await produceDiff(commit, true)
 
       display(diffResult)
     })

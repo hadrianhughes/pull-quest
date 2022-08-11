@@ -1,10 +1,12 @@
 import { run } from './base'
 
+export const DIFF_HEAD_SIZE = 6
+
 const formatDiff = (raw: string): string => {
   const lines = raw.split('\n')
-  const diffHead = lines.slice(0, 6)
+  const diffHead = lines.slice(0, DIFF_HEAD_SIZE)
 
-  const diffBody = lines.slice(6)
+  const diffBody = lines.slice(DIFF_HEAD_SIZE)
   const diffBodyWithNumbers = diffBody.map((l, i) => `${i + 1}\t${l}`)
 
   const fullDiff = [...diffHead, ...diffBodyWithNumbers].join('\n')
@@ -24,12 +26,12 @@ export const getChangedFiles = async (commit: string): Promise<string[]> => {
   return files
 }
 
-export const produceDiff = async (commit: string): Promise<string> => {
+export const produceDiff = async (commit: string, color?: boolean): Promise<string> => {
   const diffFiles = await getChangedFiles(commit)
   const diffs: string[] = []
 
   for (const f of diffFiles) {
-    const d = await diffFileCommit(commit, f, true)
+    const d = await diffFileCommit(commit, f, color)
     diffs.push(d)
   }
 
@@ -37,7 +39,7 @@ export const produceDiff = async (commit: string): Promise<string> => {
   return diffsString
 }
 
-export const produceDiffForFile = async (commit: string, file: string): Promise<string> => {
-  const diff = await diffFileCommit(commit, file, true)
+export const produceDiffForFile = async (commit: string, file: string, color?: boolean): Promise<string> => {
+  const diff = await diffFileCommit(commit, file, color)
   return diff
 }
