@@ -6,6 +6,7 @@ import { makeListCommentsCommand } from './list-comments'
 import { makeBackCommand, makeNextCommand } from './navigate'
 import { makeNewCommand } from './new'
 import { makeStatusCommand } from './status'
+import { makeSubmitCommand } from './submit'
 import { makeSummaryCommand } from './summary'
 
 const commandFns = [
@@ -17,6 +18,7 @@ const commandFns = [
   makeNewCommand,
   makeNextCommand,
   makeStatusCommand,
+  makeSubmitCommand,
   makeSummaryCommand,
 ]
 
