@@ -4,9 +4,26 @@ import { getDiffSnippet, FileResult } from '../utils'
 import { appendFile, COMMENT_SEPARATOR, openFile } from './base'
 import { diffFileCommit } from '../git'
 
-export const openComments = async (): Promise<FileResult<string>> => {
+export const openComments = async (): Promise<FileResult<string[]>> => {
   const file = await openFile(PQ_STRUCTURE.comments)
-  const rawComments = file.split(COMMENT_SEPARATOR).slice(0, -1)
+  return { ok: true, data: file.split(COMMENT_SEPARATOR).slice(0, -1) }
+}
+
+export const getCommentCount = async (): Promise<FileResult<number>> => {
+  const { ok, error, data } = await openComments()
+  if (!ok) {
+    return { ok: false, error }
+  }
+
+  return { ok: true, data: data.length }
+}
+
+export const getFormattedComments = async (): Promise<FileResult<string>> => {
+  const { ok, error, data: rawComments } = await openComments()
+  if (!ok) {
+    return { ok: false, error }
+  }
+
   const commentsData = rawComments
     .map(c => {
       const trimmed = c.trim()
