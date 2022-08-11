@@ -1,5 +1,6 @@
 import { Command } from 'commander'
-import { display, getFormattedComments, openPR } from '../files'
+import { display, openComments, openPR } from '../files'
+import { formatComments } from '../utils'
 
 export const makeListCommentsCommand = () => {
   const listComments = new Command('comments')
@@ -11,12 +12,14 @@ export const makeListCommentsCommand = () => {
         console.info(errorPR)
       }
 
-      const { ok: okComments, error: errorComments, data: comments } = await getFormattedComments()
+      const { ok: okComments, error: errorComments, data: comments } = await openComments()
       if (!okComments) {
         console.info(errorComments)
       }
 
-      display(comments)
+      const formattedComments = await formatComments(comments)
+
+      display(formattedComments)
     })
 
   return listComments

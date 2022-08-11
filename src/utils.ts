@@ -1,6 +1,6 @@
 import * as clc from 'cli-color'
 import { ReviewStatus } from './domain'
-import { DIFF_HEAD_SIZE } from './git'
+import { DIFF_HEAD_SIZE, diffFileCommit } from './git'
 
 export type Maybe<T> = T | null
 
@@ -63,4 +63,33 @@ export const getDiffSnippet = (diff: string, line: number): string => {
   const snippet = [...init, colorLine, ...tail]
 
   return snippet.join('\n')
+}
+
+export const formatComments = async (comments: string[]): Promise<string> => {
+  const structComments = comments
+    .map(c => {
+      const trimmed = c.trim()
+      const lines = trimmed.split('\n')
+
+      const [_, _file, _line, _commit] = lines[0].match(/^(.+?):(.+?)@(.+)/)
+      const body = lines.slice(1).join('\n')
+
+      return { file: _file, line: parseInt(_line), commit: _commit, body }
+    })
+
+  const formattedComments = []
+
+  for (const c of structComments) {
+    const printInfo = (label: string, value: string) => `${clc.bold(label)}:\t${value}`
+    const fileLine = printInfo('File', c.file)
+    const lineLine = printInfo('Line', String(c.line))
+    const commitLine = printInfo('Commit', c.commit)
+
+    const diff = await diffFileCommit(c.commit, c.file, false)
+    const diffSnippet = getDiffSnippet(diff, c.line)
+
+    formattedComments.push([`${diffSnippet}\n`, fileLine, lineLine, commitLine, c.body].join('\n'))
+  }
+
+  return formattedComments.join('\n\n\n')
 }
