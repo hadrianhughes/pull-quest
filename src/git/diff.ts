@@ -14,7 +14,7 @@ const formatDiff = (raw: string): string => {
   return fullDiff
 }
 
-const diffFileCommit = async (commit: string, file: string, color?: boolean): Promise<string> => {
+export const diffFileCommit = async (commit: string, file: string, color?: boolean): Promise<string> => {
   const colorArg = color ? '--color=always' : ''
   const rawDiff = await run(`git diff ${colorArg} ${commit}^ ${commit} -- ${file}`, `error diffing file ${file} at commit ${commit}`)
   return formatDiff(rawDiff)
@@ -37,9 +37,4 @@ export const produceDiff = async (commit: string, color?: boolean): Promise<stri
 
   const diffsString = diffs.reduce((acc, d) => acc + `\n\n${d}`, '')
   return diffsString
-}
-
-export const produceDiffForFile = async (commit: string, file: string, color?: boolean): Promise<string> => {
-  const diff = await diffFileCommit(commit, file, color)
-  return diff
 }

@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { display, openCommit } from '../files'
-import { produceDiff, produceDiffForFile } from '../git'
+import { produceDiff, diffFileCommit } from '../git'
 
 export const makeDiffCommand = () => {
   const diff = new Command('diff')
@@ -15,7 +15,7 @@ export const makeDiffCommand = () => {
       }
 
       const diffResult = options.file
-        ? await produceDiffForFile(commit, options.file, true)
+        ? await diffFileCommit(commit, options.file, true)
         : await produceDiff(commit, true)
 
       display(diffResult)

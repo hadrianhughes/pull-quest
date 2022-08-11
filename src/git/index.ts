@@ -1,2 +1,2 @@
 export { run, getRepoRoot, getRemote } from './base'
-export { DIFF_HEAD_SIZE, produceDiff, produceDiffForFile } from './diff'
+export { DIFF_HEAD_SIZE, diffFileCommit, produceDiff } from './diff'

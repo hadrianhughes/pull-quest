@@ -2,7 +2,7 @@ import * as clc from 'cli-color'
 import { PQ_STRUCTURE } from '../domain'
 import { getDiffSnippet, FileResult } from '../utils'
 import { appendFile, COMMENT_SEPARATOR, openFile } from './base'
-import { produceDiffForFile } from '../git'
+import { diffFileCommit } from '../git'
 
 export const openComments = async (): Promise<FileResult<string>> => {
   const file = await openFile(PQ_STRUCTURE.comments)
@@ -26,7 +26,7 @@ export const openComments = async (): Promise<FileResult<string>> => {
     const lineLine = printInfo('Line', String(c.line))
     const commitLine = printInfo('Commit', c.commit)
 
-    const diff = await produceDiffForFile(c.commit, c.file, false)
+    const diff = await diffFileCommit(c.commit, c.file, false)
     const diffSnippet = getDiffSnippet(diff, c.line)
 
     formattedComments.push([`${diffSnippet}\n`, fileLine, lineLine, commitLine, c.body].join('\n'))
