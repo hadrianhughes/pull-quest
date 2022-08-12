@@ -45,5 +45,7 @@ export type Comment = {
 }
 
 export type Review = {
+  repo: string
   pr: string
+  status: ReviewStatus
 }
