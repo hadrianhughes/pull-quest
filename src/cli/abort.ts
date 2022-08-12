@@ -20,10 +20,12 @@ export const makeAbortCommand = () => {
         return
       }
 
-      const c = await promptly.prompt('Confirm ABORT current review? This cannot be reversed (y/N): ')
+      const c = await promptly.prompt('Confirm ABORT current review? This cannot be reversed (y/N): ', { default: 'n' })
       if (c.toLowerCase() === 'y') {
         abortPR()
         console.info('REVIEW DISCARDED')
+      } else {
+        console.info('Did not abort')
       }
     })
 

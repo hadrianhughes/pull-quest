@@ -33,9 +33,11 @@ export const makeSubmitCommand = () => {
         console.info(errCom)
       }
 
-      const c = await promptly.prompt(makeReport(pr, commentCount))
+      const c = await promptly.prompt(makeReport(pr, commentCount), { default: 'n' })
       if (c.toLowerCase() === 'y') {
         console.log('SUBMIT')
+      } else {
+        console.info('Did not submit')
       }
     })
 
