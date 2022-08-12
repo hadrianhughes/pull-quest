@@ -2,7 +2,7 @@ import { Dict } from './utils'
 
 export type PQContext = {
   repo: string
-  pr: number
+  pr?: number
 }
 
 export const PQ_STRUCTURE: Dict<string> = {

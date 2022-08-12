@@ -1,8 +1,10 @@
 import { Command } from 'commander'
+import { PQDB } from '../database'
+import { PQContext } from '../domain'
 import * as promptly from 'promptly'
 import { abortPR, openPR } from '../files'
 
-export const makeAbortCommand = () => {
+export const makeAbortCommand = (db: PQDB, ctx: PQContext) => {
   const abort = new Command('abort')
 
   abort

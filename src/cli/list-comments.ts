@@ -1,8 +1,10 @@
 import { Command } from 'commander'
+import { PQDB } from '../database'
+import { PQContext } from '../domain'
 import { display, openComments, openPR } from '../files'
 import { formatComments } from '../utils'
 
-export const makeListCommentsCommand = () => {
+export const makeListCommentsCommand = (db: PQDB, ctx: PQContext) => {
   const listComments = new Command('comments')
 
   listComments

@@ -1,4 +1,6 @@
 import { Command } from 'commander'
+import { PQDB } from '../database'
+import { PQContext } from '../domain'
 import { nextCommit, prevCommit } from '../files'
 import { FileResult } from '../utils'
 
@@ -12,13 +14,13 @@ const navigateHandler = (fn: () => Promise<FileResult>) => async () => {
   console.info(`Changed to commit: ${result.data}`)
 }
 
-export const makeNextCommand = () => {
+export const makeNextCommand = (db: PQDB, ctx: PQContext) => {
   const next = new Command('next')
   next.action(navigateHandler(nextCommit))
   return next
 }
 
-export const makeBackCommand = () => {
+export const makeBackCommand = (db: PQDB, ctx: PQContext) => {
   const back = new Command('back')
   back.action(navigateHandler(prevCommit))
   return back

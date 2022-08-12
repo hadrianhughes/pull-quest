@@ -1,9 +1,11 @@
 import { Command } from 'commander'
+import { PQDB } from '../database'
+import { PQContext } from '../domain'
 import { openPR, openStatus, saveStatus } from '../files'
 import { ReviewStatus } from '../domain'
 import { statusIcons } from '../utils'
 
-export const makeStatusCommand = () => {
+export const makeStatusCommand = (db: PQDB, ctx: PQContext) => {
   const statusSetter = (s: ReviewStatus) => async () => {
     const { ok, error } = await openPR()
     if (!ok) {

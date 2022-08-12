@@ -1,9 +1,11 @@
 import { Command } from 'commander'
+import { PQDB } from '../database'
+import { PQContext } from '../domain'
 import { openPR, openStatus, savePRCommits, startReview } from '../files'
 import { getPRCommits, getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
-export const makeNewCommand = () => {
+export const makeNewCommand = (db: PQDB, ctx: PQContext) => {
   const newCommand = new Command('new')
 
   newCommand

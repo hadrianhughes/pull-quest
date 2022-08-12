@@ -1,4 +1,6 @@
-import { program } from 'commander'
+import { program, Command } from 'commander'
+import { PQDB } from '../database'
+import { PQContext } from '../domain'
 import { makeAbortCommand } from './abort'
 import { makeCommentCommand } from './comment'
 import { makeDiffCommand } from './diff'
@@ -22,6 +24,9 @@ const commandFns = [
   makeSummaryCommand,
 ]
 
-commandFns.forEach(f => program.addCommand(f()))
+const initProgram = (db: PQDB, ctx: PQContext): Command => {
+  commandFns.forEach(f => program.addCommand(f(db, ctx)))
+  return program
+}
 
-export default program
+export default initProgram
