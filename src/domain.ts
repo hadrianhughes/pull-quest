@@ -38,8 +38,12 @@ export const statusFromString = (s: string): ReviewStatus => {
 export type Comment = {
   id: number
   commit: string
-  line: number
+  line?: number
   body: string
   repo: string
   pr: number
+}
+
+export type Review = {
+  pr: string
 }
