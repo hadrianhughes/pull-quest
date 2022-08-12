@@ -2,7 +2,22 @@ import { Comment, PQContext } from '../domain'
 import { PQDB } from '.'
 
 export const getComments = async (db: PQDB, ctx: PQContext): Promise<Comment[]> => {
-  const rows = await db.all('SELECT * FROM comments WHERE repository = ? AND pull_request = ?', [ctx.repo, ctx.pr])
+  const rows = await db.all(
+    `SELECT
+       c.id,
+       c.commit_id,
+       c.line,
+       c.body,
+       r.repository,
+       r.pull_request
+     FROM
+       comments c
+     INNER JOIN reviews r ON
+       r.id = c.review
+     WHERE
+       r.active = 1;
+     `
+  )
 
   return rows.map(r => ({
     id: r.id,
