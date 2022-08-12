@@ -11,7 +11,7 @@ const run = async () => {
   const repoRoot = await getRepoRoot()
 
   const ctx: PQContext = { repo: repoRoot }
-  const db = init()
+  const db = await init()
 
   const program = initProgram(db, ctx)
 

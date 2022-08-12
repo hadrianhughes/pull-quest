@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const nodeExternals = require('webpack-node-externals')
 
 module.exports = {
   target: 'node',
@@ -26,5 +27,6 @@ module.exports = {
       raw: true,
     }),
   ],
+  externals: [nodeExternals()],
   mode: 'development',
 }

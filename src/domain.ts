@@ -34,3 +34,12 @@ export const statusFromString = (s: string): ReviewStatus => {
       throw new Error(`error: ${s} is not a valid review status`)
   }
 }
+
+export type Comment = {
+  id: number
+  commit: string
+  line: number
+  body: string
+  repo: string
+  pr: number
+}
