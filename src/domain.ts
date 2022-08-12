@@ -1,5 +1,10 @@
 import { Dict } from './utils'
 
+export type PQContext = {
+  repo: string
+  pr: number
+}
+
 export const PQ_STRUCTURE: Dict<string> = {
   pr: 'pr',
   status: 'status',
