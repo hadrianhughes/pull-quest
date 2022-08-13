@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { PQDB, addReview, setActiveReview } from '../database'
-import { PQContext, ReviewStatus } from '../domain'
+import { PQContext, ReviewState } from '../domain'
 import { getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
@@ -12,13 +12,13 @@ export const makeNewCommand = (db: PQDB, ctx: PQContext) => {
     .action(async (prNumber: number) => {
       await getPullRequest(prNumber)
 
-      const result = await addReview(db, ctx.repo, prNumber, ReviewStatus.Comment)
+      const result = await addReview(db, ctx.repo, prNumber, ReviewState.Comment)
       await setActiveReview(db, ctx.repo, prNumber)
 
       printInfo({
         repository: result.repo,
         pullRequest: String(result.pr),
-        status: ReviewStatus.Comment,
+        state: ReviewState.Comment,
       }, 'Started a review')
     })
 

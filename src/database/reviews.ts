@@ -1,7 +1,7 @@
-import { Review, ReviewStatus, statusFromString } from '../domain'
+import { Review, ReviewState, stateFromString } from '../domain'
 import { PQDB } from '.'
 
-export const addReview = async (db: PQDB, repo: string, pr: number, state: ReviewStatus): Promise<Review> => {
+export const addReview = async (db: PQDB, repo: string, pr: number, state: ReviewState): Promise<Review> => {
   const { lastID, changes } = await db.run(
     'INSERT INTO reviews (repository, pull_request, state, active) VALUES (?, ?, ?, 0);',
     [repo, pr, state],
@@ -11,7 +11,7 @@ export const addReview = async (db: PQDB, repo: string, pr: number, state: Revie
     throw new Error(`error inserting into reviews table: { repo: ${repo}, pr: ${pr}, state: ${state} }`)
   }
 
-  return { id: lastID, repo, pr, status: state }
+  return { id: lastID, repo, pr, state: state }
 }
 
 export const setActiveReview = async (db: PQDB, repo: string, pr: number): Promise<Review> => {
@@ -35,6 +35,6 @@ export const setActiveReview = async (db: PQDB, repo: string, pr: number): Promi
     id: row.rowid,
     repo: row.repository,
     pr: row.pull_request,
-    status: statusFromString(row.state),
+    state: stateFromString(row.state),
   }
 }

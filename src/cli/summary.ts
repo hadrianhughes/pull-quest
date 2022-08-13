@@ -1,7 +1,7 @@
 import { Command } from 'commander'
 import { PQDB } from '../database'
 import { PQContext } from '../domain'
-import { openPR, openStatus } from '../files'
+import { openPR, openState } from '../files'
 import { getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
@@ -16,13 +16,13 @@ export const makeSummaryCommand = (db: PQDB, ctx: PQContext) => {
         return
       }
 
-      const { data: status } = await openStatus()
+      const { data: state } = await openState()
 
       const pr = await getPullRequest(prNumber)
       printInfo({
         repository: pr.head.repo.full_name,
         pullRequest: String(prNumber),
-        status,
+        state,
       }, 'REVIEW IN PROGRESS')
     })
 

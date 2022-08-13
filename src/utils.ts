@@ -1,5 +1,5 @@
 import * as clc from 'cli-color'
-import { ReviewStatus } from './domain'
+import { ReviewState } from './domain'
 import { DIFF_HEAD_SIZE, diffFileCommit } from './git'
 
 export type Maybe<T> = T | null
@@ -9,21 +9,21 @@ export type Dict<T> = { [key: string]: T }
 export type PrintableInfo = {
   repository: string;
   pullRequest: string;
-  status: string;
+  state: string;
 }
 
-export const infoPrecendence: (keyof PrintableInfo)[] = ['repository', 'pullRequest', 'status']
+export const infoPrecendence: (keyof PrintableInfo)[] = ['repository', 'pullRequest', 'state']
 
 export const infoLabels: PrintableInfo = {
   repository: 'Repository',
   pullRequest: 'Pull Request',
-  status: 'Status',
+  state: 'State',
 }
 
-export const statusIcons = {
-  [ReviewStatus.Comment]: '💬',
-  [ReviewStatus.RequestChanges]: '🚧',
-  [ReviewStatus.Approved]: '✅',
+export const stateIcons = {
+  [ReviewState.Comment]: '💬',
+  [ReviewState.RequestChanges]: '🚧',
+  [ReviewState.Approved]: '✅',
 }
 
 export const printInfo = (info: PrintableInfo, message?: string) => {

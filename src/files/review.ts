@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { PQ_STRUCTURE, ReviewStatus, statusFromString } from '../domain'
+import { PQ_STRUCTURE, ReviewState, stateFromString } from '../domain'
 import { FileResult } from '../utils'
 import { deleteFile, openFile, touchRoot, writeFile } from './base'
 
@@ -8,7 +8,7 @@ export const startReview = async (prNumber: number): Promise<FileResult> => {
   await touchRoot()
 
   writeFile(PQ_STRUCTURE.pr, String(prNumber))
-  writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
+  writeFile(PQ_STRUCTURE.state, ReviewState.Comment)
   writeFile(PQ_STRUCTURE.commit, '0')
 
   return { ok: true }
@@ -23,14 +23,14 @@ export const openPR = async (): Promise<FileResult<number>> => {
   return { ok: true, data: parseInt(file) }
 }
 
-export const openStatus = async (): Promise<FileResult<ReviewStatus>> => {
-  const file = await openFile(PQ_STRUCTURE.status)
+export const openState = async (): Promise<FileResult<ReviewState>> => {
+  const file = await openFile(PQ_STRUCTURE.state)
   if (!file) {
-    writeFile(PQ_STRUCTURE.status, ReviewStatus.Comment)
-    return { ok: true, data: ReviewStatus.Comment }
+    writeFile(PQ_STRUCTURE.state, ReviewState.Comment)
+    return { ok: true, data: ReviewState.Comment }
   }
 
-  return { ok: true, data: statusFromString(file) }
+  return { ok: true, data: stateFromString(file) }
 }
 
 export const abortPR = async (): Promise<FileResult> => {
@@ -45,8 +45,8 @@ export const abortPR = async (): Promise<FileResult> => {
   return { ok: true }
 }
 
-export const saveStatus = async (s: ReviewStatus): Promise<FileResult> => {
-  await writeFile(PQ_STRUCTURE.status, s)
+export const saveState = async (s: ReviewState): Promise<FileResult> => {
+  await writeFile(PQ_STRUCTURE.state, s)
 
   return { ok: true }
 }

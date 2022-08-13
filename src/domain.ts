@@ -7,7 +7,7 @@ export type PQContext = {
 
 export const PQ_STRUCTURE: Dict<string> = {
   pr: 'pr',
-  status: 'status',
+  state: 'state',
   prCommits: 'pr_commits',
   commit: 'commit',
   diff: 'diff',
@@ -16,22 +16,22 @@ export const PQ_STRUCTURE: Dict<string> = {
   comments: 'comments',
 }
 
-export enum ReviewStatus {
+export enum ReviewState {
   Comment = 'comment',
   RequestChanges = 'changes',
   Approved = 'approved',
 }
 
-export const statusFromString = (s: string): ReviewStatus => {
+export const stateFromString = (s: string): ReviewState => {
   switch (s) {
-    case ReviewStatus.Comment:
-      return ReviewStatus.Comment
-    case ReviewStatus.RequestChanges:
-      return ReviewStatus.RequestChanges
-    case ReviewStatus.Approved:
-      return ReviewStatus.Approved
+    case ReviewState.Comment:
+      return ReviewState.Comment
+    case ReviewState.RequestChanges:
+      return ReviewState.RequestChanges
+    case ReviewState.Approved:
+      return ReviewState.Approved
     default:
-      throw new Error(`error: ${s} is not a valid review status`)
+      throw new Error(`error: ${s} is not a valid review state`)
   }
 }
 
@@ -48,5 +48,5 @@ export type Review = {
   id: number
   repo: string
   pr: number
-  status: ReviewStatus
+  state: ReviewState
 }

@@ -7,7 +7,7 @@ import { makeDiffCommand } from './diff'
 import { makeListCommentsCommand } from './list-comments'
 import { makeBackCommand, makeNextCommand } from './navigate'
 import { makeNewCommand } from './new'
-import { makeStatusCommand } from './status'
+import { makeStateCommand } from './state'
 import { makeSubmitCommand } from './submit'
 import { makeSummaryCommand } from './summary'
 
@@ -19,7 +19,7 @@ const commandFns = [
   makeListCommentsCommand,
   makeNewCommand,
   makeNextCommand,
-  makeStatusCommand,
+  makeStateCommand,
   makeSubmitCommand,
   makeSummaryCommand,
 ]
