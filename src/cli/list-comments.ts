@@ -1,15 +1,14 @@
 import { Command } from 'commander'
 import { getComments, PQDB } from '../database'
-import { PQContext } from '../domain'
 import { display, openComments, openPR } from '../files'
 import { formatComments } from '../utils'
 
-export const makeListCommentsCommand = (db: PQDB, ctx: PQContext) => {
+export const makeListCommentsCommand = (db: PQDB) => {
   const listComments = new Command('comments')
 
   listComments
     .action(async () => {
-      const rows = await getComments(db, ctx)
+      const rows = await getComments(db)
       console.log(rows)
 
       const { ok: okPR, error: errorPR } = await openPR()

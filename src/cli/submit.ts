@@ -1,7 +1,6 @@
 import * as clc from 'cli-color'
 import { Command } from 'commander'
 import { PQDB } from '../database'
-import { PQContext } from '../domain'
 import * as promptly from 'promptly'
 import { openPR, getCommentCount } from '../files'
 
@@ -13,7 +12,7 @@ ${clc.bold('# Comments:')}\t${commentCount}
 Confirm? (y/N): 
 `
 
-export const makeSubmitCommand = (db: PQDB, ctx: PQContext) => {
+export const makeSubmitCommand = (db: PQDB) => {
   const submit = new Command('submit')
 
   submit

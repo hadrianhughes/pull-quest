@@ -1,9 +1,8 @@
 import { Command } from 'commander'
 import { PQDB } from '../database'
-import { PQContext } from '../domain'
 import { saveComment, takeEditorInput, openPR, openCommit } from '../files'
 
-export const makeCommentCommand = (db: PQDB, ctx: PQContext) => {
+export const makeCommentCommand = (db: PQDB) => {
   const comment = new Command('comment')
 
   comment

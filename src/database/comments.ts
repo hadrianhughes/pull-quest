@@ -1,7 +1,7 @@
-import { Comment, PQContext } from '../domain'
+import { Comment } from '../domain'
 import { PQDB } from '.'
 
-export const getComments = async (db: PQDB, ctx: PQContext): Promise<Comment[]> => {
+export const getComments = async (db: PQDB): Promise<Comment[]> => {
   const rows = await db.all(
     `SELECT
        c.id,

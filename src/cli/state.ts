@@ -1,11 +1,10 @@
 import { Command } from 'commander'
 import { PQDB } from '../database'
-import { PQContext } from '../domain'
 import { openPR, openState, saveState } from '../files'
 import { ReviewState } from '../domain'
 import { stateIcons } from '../utils'
 
-export const makeStateCommand = (db: PQDB, ctx: PQContext) => {
+export const makeStateCommand = (db: PQDB) => {
   const stateSetter = (s: ReviewState) => async () => {
     const { ok, error } = await openPR()
     if (!ok) {

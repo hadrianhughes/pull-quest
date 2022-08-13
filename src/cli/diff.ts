@@ -1,10 +1,9 @@
 import { Command } from 'commander'
 import { PQDB } from '../database'
-import { PQContext } from '../domain'
 import { display, openCommit } from '../files'
 import { produceDiff, diffFileCommit } from '../git'
 
-export const makeDiffCommand = (db: PQDB, ctx: PQContext) => {
+export const makeDiffCommand = (db: PQDB) => {
   const diff = new Command('diff')
 
   diff

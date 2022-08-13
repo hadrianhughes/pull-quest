@@ -1,10 +1,11 @@
 import { Command } from 'commander'
 import { PQDB, addReview, setActiveReview } from '../database'
-import { PQContext, ReviewState } from '../domain'
-import { getPullRequest } from '../github'
+import { ReviewState } from '../domain'
+import { getRemote } from '../git'
+import { getPullRequest, detailsFromRemote } from '../github'
 import { printInfo } from '../utils'
 
-export const makeNewCommand = (db: PQDB, ctx: PQContext) => {
+export const makeNewCommand = (db: PQDB) => {
   const newCommand = new Command('new')
 
   newCommand
@@ -12,8 +13,12 @@ export const makeNewCommand = (db: PQDB, ctx: PQContext) => {
     .action(async (prNumber: number) => {
       await getPullRequest(prNumber)
 
-      const result = await addReview(db, ctx.repo, prNumber, ReviewState.Comment)
-      await setActiveReview(db, ctx.repo, prNumber)
+      const remote = await getRemote()
+      const { owner, repo } = detailsFromRemote(remote)
+      const fullRepo = `${owner}/${repo}`
+
+      const result = await addReview(db, fullRepo, prNumber, ReviewState.Comment)
+      await setActiveReview(db, fullRepo, prNumber)
 
       printInfo({
         repository: result.repo,

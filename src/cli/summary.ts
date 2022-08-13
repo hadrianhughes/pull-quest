@@ -1,11 +1,10 @@
 import { Command } from 'commander'
 import { PQDB } from '../database'
-import { PQContext } from '../domain'
 import { openPR, openState } from '../files'
 import { getPullRequest } from '../github'
 import { printInfo } from '../utils'
 
-export const makeSummaryCommand = (db: PQDB, ctx: PQContext) => {
+export const makeSummaryCommand = (db: PQDB) => {
   const summary = new Command('summary')
 
   summary
