@@ -17,7 +17,7 @@ export const makeNewCommand = (db: PQDB, ctx: PQContext) => {
         return
       }
 
-      const pr = await getPullRequest(id)
+      await getPullRequest(id)
       startReview(id)
 
       const { ok: okStatus, error, data: status } = await openStatus()
@@ -30,7 +30,7 @@ export const makeNewCommand = (db: PQDB, ctx: PQContext) => {
       await savePRCommits(commits)
 
       printInfo({
-        repository: pr.head.repo.full_name,
+        repository: ctx.repo,
         pullRequest: String(id),
         status,
       }, 'STARTED A REVIEW')
