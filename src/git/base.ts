@@ -8,6 +8,18 @@ const exec = (cmd: string): Promise<string> => new Promise((resolve, reject) => 
   })
 })
 
+export const detailsFromRemote = (remote: string) => {
+  const match = remote.match(/^.+(?::|\/)(.+)\/(.+)\.git$/)
+  if (match.length < 3) {
+    throw new Error(`error parsing remote: ${remote}`)
+  }
+
+  return {
+    owner: match[1],
+    repo: match[2],
+  }
+}
+
 export const run = async (command: string, errorText: string): Promise<string> => {
   try {
     const stdout = await exec(command)
@@ -20,3 +32,11 @@ export const run = async (command: string, errorText: string): Promise<string> =
 export const getRepoRoot = () => run('git rev-parse --show-toplevel', 'error getting repo root')
 
 export const getRemote = () => run('git remote get-url origin', 'error getting remote')
+
+export const getFullRepo = async (): Promise<string> => {
+  const remote = await getRemote()
+  const { owner, repo } = detailsFromRemote(remote)
+  const fullRepo = `${owner}/${repo}`
+
+  return fullRepo
+}

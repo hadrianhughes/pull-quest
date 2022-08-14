@@ -1,7 +1,6 @@
 import { Command } from 'commander'
 import { PQDB, getActiveReview } from '../database'
-import { getRemote } from '../git'
-import { detailsFromRemote } from '../github'
+import { getFullRepo } from '../git'
 import { printInfo } from '../utils'
 
 export const makeSummaryCommand = (db: PQDB) => {
@@ -9,11 +8,9 @@ export const makeSummaryCommand = (db: PQDB) => {
 
   summary
     .action(async () => {
-      const remote = await getRemote()
-      const { owner, repo } = detailsFromRemote(remote)
-      const fullRepo = `${owner}/${repo}`
+      const repo = await getFullRepo()
 
-      const review = await getActiveReview(db, fullRepo)
+      const review = await getActiveReview(db, repo)
       if (!review) {
         console.info('No review in progress')
       }
