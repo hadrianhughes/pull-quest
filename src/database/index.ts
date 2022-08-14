@@ -29,4 +29,4 @@ export const init = async (): Promise<PQDB> => {
 }
 
 export { getComments } from './comments'
-export { addReview, setActiveReview, getActiveReview } from './reviews'
+export { addReview, setActiveReview, getActiveReview, setReviewState } from './reviews'

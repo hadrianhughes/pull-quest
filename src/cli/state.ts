@@ -1,18 +1,14 @@
 import { Command } from 'commander'
-import { PQDB } from '../database'
-import { openPR, openState, saveState } from '../files'
+import { PQDB, getActiveReview, setReviewState } from '../database'
+import { getFullRepo } from '../git'
 import { ReviewState } from '../domain'
 import { stateIcons } from '../utils'
 
 export const makeStateCommand = (db: PQDB) => {
   const stateSetter = (s: ReviewState) => async () => {
-    const { ok, error } = await openPR()
-    if (!ok) {
-      console.info(error)
-      return
-    }
+    const repo = await getFullRepo()
 
-    saveState(s)
+    await setReviewState(db, repo, s)
 
     console.info(`Review state: ${s} ${stateIcons[s]}`)
   }
@@ -21,19 +17,14 @@ export const makeStateCommand = (db: PQDB) => {
 
   state
     .action(async () => {
-      const { ok: okPR, error: prError } = await openPR()
-      if (!okPR) {
-        console.info(prError)
-        return
+      const repo = await getFullRepo()
+
+      const review = await getActiveReview(db, repo)
+      if (!review) {
+        console.info('No review in progress')
       }
 
-      const { ok: okState, error: stateError, data: s } = await openState()
-      if (!okState) {
-        console.info(stateError)
-        return
-      }
-
-      console.info(`Review state: ${s} ${stateIcons[s]}`)
+      console.info(`Review state: ${review.state} ${stateIcons[review.state]}`)
     })
 
     state

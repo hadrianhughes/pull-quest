@@ -57,3 +57,14 @@ export const getActiveReview = async (db: PQDB, repo: string): Promise<Maybe<Rev
     state: stateFromString(row.state),
   }
 }
+
+export const setReviewState = async (db: PQDB, repo: string, state: ReviewState) => {
+  const { changes } = await db.run(
+    'UPDATE reviews SET state = ? WHERE repository = ? AND active = 1;',
+    [state, repo],
+  )
+
+  if (changes === 0) {
+    throw new Error(`error setting review state for active review for ${repo}`)
+  }
+}
