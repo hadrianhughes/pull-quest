@@ -1,4 +1,5 @@
 import { Review, ReviewState, stateFromString } from '../domain'
+import { Maybe } from '../utils'
 import { PQDB } from '.'
 
 export const addReview = async (db: PQDB, repo: string, pr: number, state: ReviewState): Promise<Review> => {
@@ -30,6 +31,24 @@ export const setActiveReview = async (db: PQDB, repo: string, pr: number): Promi
     'SELECT rowid, repository, pull_request, state FROM reviews WHERE rowid = ?',
     [lastID],
   )
+
+  return {
+    id: row.rowid,
+    repo: row.repository,
+    pr: row.pull_request,
+    state: stateFromString(row.state),
+  }
+}
+
+export const getActiveReview = async (db: PQDB, repo: string): Promise<Maybe<Review>> => {
+  const row = await db.get(
+    'SELECT rowid, repository, pull_request, state FROM reviews WHERE repository = ? AND active = 1;',
+    [repo],
+  )
+
+  if (!row) {
+    return null
+  }
 
   return {
     id: row.rowid,

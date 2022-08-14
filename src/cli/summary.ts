@@ -1,7 +1,7 @@
 import { Command } from 'commander'
-import { PQDB } from '../database'
-import { openPR, openState } from '../files'
-import { getPullRequest } from '../github'
+import { PQDB, getActiveReview } from '../database'
+import { getRemote } from '../git'
+import { detailsFromRemote } from '../github'
 import { printInfo } from '../utils'
 
 export const makeSummaryCommand = (db: PQDB) => {
@@ -9,19 +9,19 @@ export const makeSummaryCommand = (db: PQDB) => {
 
   summary
     .action(async () => {
-      const { ok, error, data: prNumber } = await openPR()
-      if (!ok) {
-        console.info(error)
-        return
+      const remote = await getRemote()
+      const { owner, repo } = detailsFromRemote(remote)
+      const fullRepo = `${owner}/${repo}`
+
+      const review = await getActiveReview(db, fullRepo)
+      if (!review) {
+        console.info('No review in progress')
       }
 
-      const { data: state } = await openState()
-
-      const pr = await getPullRequest(prNumber)
       printInfo({
-        repository: pr.head.repo.full_name,
-        pullRequest: String(prNumber),
-        state,
+        repository: review.repo,
+        pullRequest: String(review.pr),
+        state: review.state,
       }, 'REVIEW IN PROGRESS')
     })
 
