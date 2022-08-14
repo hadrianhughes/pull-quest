@@ -13,6 +13,7 @@ export const makeSummaryCommand = (db: PQDB) => {
       const review = await getActiveReview(db, repo)
       if (!review) {
         console.info('No review in progress')
+        return
       }
 
       printInfo({

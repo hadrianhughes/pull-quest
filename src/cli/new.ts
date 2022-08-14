@@ -2,7 +2,7 @@ import { Command } from 'commander'
 import { PQDB, addReview, setActiveReview } from '../database'
 import { ReviewState } from '../domain'
 import { getFullRepo } from '../git'
-import { getPullRequest } from '../github'
+import { getPullRequest, getPRCommits } from '../github'
 import { printInfo } from '../utils'
 
 export const makeNewCommand = (db: PQDB) => {
@@ -14,8 +14,9 @@ export const makeNewCommand = (db: PQDB) => {
       await getPullRequest(prNumber)
 
       const repo = await getFullRepo()
+      const commits = await getPRCommits(prNumber)
 
-      const result = await addReview(db, repo, prNumber, ReviewState.Comment)
+      const result = await addReview(db, repo, prNumber, ReviewState.Comment, commits[0])
       await setActiveReview(db, repo, prNumber)
 
       printInfo({

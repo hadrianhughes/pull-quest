@@ -49,4 +49,5 @@ export type Review = {
   repo: string
   pr: number
   state: ReviewState
+  activeCommit: string
 }
