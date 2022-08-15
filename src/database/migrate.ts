@@ -11,6 +11,7 @@ const statements = [
   `CREATE TABLE IF NOT EXISTS comments(
     commit_id TEXT NOT NULL,
     line INT,
+    file TEXT,
     body TEXT NOT NULL,
     review INT NOT NULL,
     FOREIGN KEY (review) REFERENCES reviews (id)

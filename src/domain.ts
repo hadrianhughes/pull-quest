@@ -39,6 +39,7 @@ export type Comment = {
   id: number
   commit: string
   line?: number
+  file?: string
   body: string
   repo: string
   pr: number

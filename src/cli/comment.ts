@@ -1,6 +1,7 @@
 import { Command } from 'commander'
-import { PQDB } from '../database'
-import { saveComment, takeEditorInput, openPR, openCommit } from '../files'
+import { PQDB, getActiveReview, addComment } from '../database'
+import { takeEditorInput } from '../files'
+import { getFullRepo } from '../git'
 
 export const makeCommentCommand = (db: PQDB) => {
   const comment = new Command('comment')
@@ -9,21 +10,14 @@ export const makeCommentCommand = (db: PQDB) => {
     .argument('<file>', 'the file which the comment relates to')
     .argument('<line_number>', 'the line number in the file which the comment relates to')
     .action(async (file: string, lineNumber: number) => {
-      const { ok: okPR, error: errorPR } = await openPR()
-      if (!okPR) {
-        console.info(errorPR)
-      }
+      const repo = await getFullRepo()
+      const review = await getActiveReview(db, repo)
 
       const { data: msg } = await takeEditorInput()
 
-      const { ok: okCommit, error: commitErr, data: commit } = await openCommit()
-      if (!okCommit) {
-        console.info(commitErr)
-      }
+      await addComment(db, review.id, review.activeCommit, msg, file, lineNumber)
 
-      await saveComment(file, lineNumber, commit, msg)
-
-      console.info(`Comment saved for ${file}:${lineNumber}:\n\n${msg}`)
+      console.info(`Comment added for ${file}:${lineNumber}:\n\n${msg}`)
     })
 
   return comment
